@@ -1,4 +1,4 @@
-# ECE4078_Lab_2021
+# ECE4078_Lab_2022
 Repository for labs of unit ECE4078 (Intelligent Robotics) offered in 2022
 
 You will work in groups to develop a fruit delivery robot. The groups will be assigned based on your answers to the CATME survey. More info about the lab project can be found on [Moodle](https://lms.monash.edu/course/view.php?id=139686&section=3).
