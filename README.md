@@ -11,3 +11,4 @@ For each lab milestone, you will submit your code on Moodle. Each group needs to
 - **Lab 02** is on Thu 2pm-5pm in Woodside Building room 303. Demonstrators are Rachel & Tom
 - **Lab 03** is on Fri 10am-1pm in Woodside Building room 303. Demonstrators are Liam & Morris
 - **Lab 04** is on Fri 1pm-4pm in Woodside Building room 303. Demonstrators are Tin & Richard
+- **Lab 05** is on Wed 12pm-3pm on Zoom (join this [link](https://monash.zoom.us/j/84564135587?pwd=T3owY2FTWDd3RXhzcjJTK3hQOG5aQT09)). Demonstrator is Rachel
