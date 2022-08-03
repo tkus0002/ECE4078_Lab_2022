@@ -23,6 +23,8 @@ This command will open a GUI with the robot's camera view shown.
 - **Using Physical Robot**
   - If you are operating a physical robot, you will need to include flag for its IP address and port in your command (see [Installation Guide](InstallationGuide.md) for details).
 
+**Note:** In order to run ```python3 operate.py```, your terminal needs to be in the directory where [operate.py](operate.py) is (eg. ```ECE4078_Lab_2022/Week01-02/```)
+
 **You don't have to use the provided scripts.** Feel free to be creative and write your own scripts for teleoperating the robot with keyboard.
 
 ## Marking Guidelines

@@ -26,7 +26,11 @@ You can change the amound of resources (e.g., RAM, processing cores) assigned to
 ## Option 2: Installing WSL2 on Windows
 The new Windows Subsystem for Linux (WSL2) has nice supports for GUI app (eg. Gazebo), and it may run faster on your laptop/PC compared to running to a virtual machine. However, the nice GUI support for WSL2 only works well on Windows 11 (and certain Windows 10 build), so this option may not be viable for you if you don't have Windows 11. 
 
-Please follow these [instructions](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#2-install-wsl) to set up your WSL2. Note that you should install Ubuntu 18.04.
+Please follow these [instructions](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#2-install-wsl) to set up your WSL2. Note that you should install **Ubuntu 18.04**, and you can skip the step to install octave.
+
+To access the files in your Win11 from the Ubuntu subsystem, in your ubuntu terminal you can use ```cd /mnt/```. For example, if you have a folder named ```test_folder``` in the C:\ drive of Win11, you can navigate to that directory using ```cd /mnt/c/test_folder```. To transfer files between Win11 and Ubuntu, you can use the ```cp``` command (more info [here](https://manpages.ubuntu.com/manpages/trusty/man1/cp.1.html)). For example, if you have a file at C:/test.txt in Win11, you can copy it to your Ubuntu using ```cp /mnt/c/test.txt your_destination_dir```.
+
+Otherwise, you may try [this](https://devblogs.microsoft.com/commandline/access-linux-filesystems-in-windows-and-wsl-2/) if you prefer using explorer to drag and drop. You may place your files/folders in ```/home/your_user_name/```.
 
 ## Option 3: Dual boot your computer 
 CAUTION! Please only procced with this option if you know what you are doing, and do this at your own risk.
@@ -88,10 +92,7 @@ catkin_make
 
 Replace the src folder in your local catkin_ws directory with [the src folder provided](https://drive.google.com/file/d/1VSmSmg7iuF-tQzWhlnmtwjsNhzxlPqU8/view?usp=sharing) which contains the required models
 
-test teleoperating the robot in the simulator
-```
-python3 operate.py
-```
+
 ![Teleoperate the robot](Teleop.png?raw=true "Teleoperate the robot")
 
 
