@@ -66,6 +66,8 @@ Zip your whole Week01-02 and catkin_ws folders (see the picture below) to the Mo
 
 3. Have an **empty** folder named "LiveDemo" ready at the Ubuntu home directory, ie. it is at ```~/LiveDemo/```. This folder should remain open at all time during marking (Does not apply to WSL2 users)
 
+4. **[ROBOT ONLY]** Please turn on your robot before the demonstrator comes to you. DO NOT connect to its hotspot yet 
+
 #### Step 3:
 **During marking**
 1. When the demonstrator start to mark you, download your submitted zip file from Moodle and unzip its content to the "LiveDemo" folder
@@ -89,6 +91,7 @@ Zip your whole Week01-02 and catkin_ws folders (see the picture below) to the Mo
 - [ ] Close all programs and folders
 - [ ] In Ubuntu, login Moodle and navigate to the submission box
 - [ ] Open an empty folder named "LiveDemo" (located at ```~/LiveDemo/```)
+- [ ] Turn on the robot (DO NOT connect to its hotspot yet)
 
 **During the marking**
 - [ ] Demonstrator will ask you to download your submission and unzip it to "LiveDemo"
