@@ -91,6 +91,11 @@ class EKF:
         x = self.get_state_vector()
 
         # TODO: add your codes here to compute the predicted x
+        Q = self.predict_covariance(raw_drive_meas)
+        self.P = F @ self.P @F.T +Q
+        #Update the step using dribe
+        x = self.robot.drive(x)
+        self.set_state_vector(x)
 
     # the update step of EKF
     def update(self, measurements):
