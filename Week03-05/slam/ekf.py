@@ -131,9 +131,9 @@ class EKF:
         #Correcting Covariance
         self.P = (np.eye(x.shape[0]) - K @ H) @ self.P
         #Print the current state
-        print("\n\nx = "+str(x[0])
-        print("\ny = "+str(x[1]))
-        print("\ntheta = "+str(x[2]))
+        #print("\n\nx = "+str(x[0])
+        #print("\ny = "+str(x[1]))
+        #print("\ntheta = "+str(x[2]))
 
 
     def state_transition(self, raw_drive_meas):
