@@ -130,7 +130,10 @@ class EKF:
         self.set_state_vector(x)
         #Correcting Covariance
         self.P = (np.eye(x.shape[0]) - K @ H) @ self.P
-        #self.set_state_vector = np.array(self.get_state_vector()).flatten()
+        #Print the current state
+        print("\n\nx = "+str(x[0])
+        print("\ny = "+str(x[1]))
+        print("\ntheta = "+str(x[2]))
 
 
     def state_transition(self, raw_drive_meas):
