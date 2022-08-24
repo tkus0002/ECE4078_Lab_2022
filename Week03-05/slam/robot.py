@@ -77,17 +77,12 @@ class Robot:
         th = self.state[2]
         
         # TODO: add your codes here to compute DFx using lin_vel, ang_vel, dt, and th
-<<<<<<< Updated upstream
         if ang_vel == 0:
             DFx[0,2] = 0
             DFx[1,2] = 0
         else: 
-            DFx[0,2] = lin_vel / ang_vel * (-np.cos(th) + np.cos(th+((ang_vel*dt))))
+            DFx[0,2] = lin_vel / ang_vel * (-np.cos(th) + np.cos(th+((ang_vel*dt)))) #check if this should be flipped
             DFx[1,2] = lin_vel / ang_vel * (-np.sin(th) + np.sin(th+((ang_vel*dt))))
-=======
-        DFx[0,2] = lin_vel / (ang_vel+np.finfo(float).eps) * (-np.cos(th) + np.cos(th+ang_vel*dt)) #check if this should be flipped
-        DFx[1,2] = lin_vel / (ang_vel+np.finfo(float).eps) * (-np.sin(th) + np.sin(th+ang_vel*dt))
->>>>>>> Stashed changes
 
         return DFx
 
