@@ -92,10 +92,16 @@ class EKF:
         self.robot.drive(raw_drive_meas)
         x = self.get_state_vector()
 
-        # TODO: add your codes here to compute the predicted x
-        Q = self.predict_covariance(raw_drive_meas)
-        self.P = F @ self.P @F.T +Q
-        #Update the step using dribe
+        # TODO: add your codes here to compute the predicted drive
+        #Robot is going in a straight line
+        if raw_drive_meas[0]==raw_drive_meas[1]:
+            Q = self.predict_covariance(raw_drive_meas)
+            self.P = F @ self.P @F.T +Q
+        #Robot is turning hence more uncertainty
+        else:
+            Q = self.predict_covariance(raw_drive_meas)
+            self.P = F @ self.P @F.T +Q
+            self.P = self.P*0.5
 
 
     # the update step of EKF
