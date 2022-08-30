@@ -3,7 +3,7 @@
 - [Useful resources](#an-index-of-provided-resources)
 - [Data collection (Week 6)](#step-1-data-collection)
 - [Training the NN (Week 6)](#step-2-training-your-neural-network)
-- [Estimating the target poses](#step-3-estimating-target-poses)
+- [Estimating the target poses (Week 7)](#step-3-estimating-target-poses)
 
 
 ## Introduction
