@@ -134,7 +134,7 @@ class EKF:
         K = self.P @ H.T @ np.linalg.inv(S)
         #Adjusting the correct state
         y = z - z_hat
-        x = self.get_state_vector() + K @ y
+        x = self.get_state_vector() + 0.65*K @ y
         #Getting state estimate
         self.set_state_vector(x)
         #Correcting Covariance
