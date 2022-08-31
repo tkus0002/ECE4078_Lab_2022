@@ -94,7 +94,7 @@ class EKF:
         # TODO: add your codes here to compute the predicted drive
         #Robot is going in a straight line
         
-        if raw_drive_meas[0]==raw_drive_meas[1]:
+        if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
             Q = self.predict_covariance(raw_drive_meas)
             self.P = F @ self.P @F.T +Q
             if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
