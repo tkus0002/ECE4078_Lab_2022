@@ -90,13 +90,15 @@ class EKF:
         F = self.state_transition(raw_drive_meas)
         x = self.get_state_vector()
         self.robot.drive(raw_drive_meas)
-        x = self.get_state_vector()
 
         # TODO: add your codes here to compute the predicted drive
         #Robot is going in a straight line
+        
         if raw_drive_meas[0]==raw_drive_meas[1]:
             Q = self.predict_covariance(raw_drive_meas)
             self.P = F @ self.P @F.T +Q
+            if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
+                self.P=self.P *0.5
         #Robot is turning hence more uncertainty
         else:
             Q = self.predict_covariance(raw_drive_meas)
