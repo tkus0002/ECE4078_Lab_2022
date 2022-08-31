@@ -97,13 +97,13 @@ class EKF:
 
         if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
             Q = self.predict_covariance(raw_drive_meas)
-            self.P = F @ self.P @F.T +Q
+            self.P = F @ self.P @F.T +0.5*Q
             if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
                 self.P=self.P *0.5
         #Robot is turning hence more uncertainty
         else:
             Q = self.predict_covariance(raw_drive_meas)
-            self.P = F @ self.P @F.T +Q
+            self.P = F @ self.P @F.T +0.5*Q
             self.P = self.P*0.5
 
 
@@ -135,7 +135,7 @@ class EKF:
         K = self.P @ H.T @ np.linalg.inv(S)
         #Adjusting the correct state
         y = z - z_hat
-        x = self.get_state_vector() + 0.65*K @ y
+        x = self.get_state_vector() + K @ y
         #Getting state estimate
         self.set_state_vector(x)
         #Correcting Covariance
