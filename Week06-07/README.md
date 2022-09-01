@@ -35,9 +35,15 @@ The following is only a guideline to assist you to train a basic target detector
 4. Unzip [data_collector.zip](https://drive.google.com/file/d/1zxjZpJVTPvO_RGJGkwHJBu0dJRlktOqe/view?usp=sharing) to ```catkin_ws/src/```
 
 ### b) Changing environment textures
-Now open a terminal and run: 
+First, navigate to your ```catkin_ws``` directory, then open a terminal and run either ```catkin_make``` or ```catkin build```. If you run into trouble with this step with ```catkin_make```, try sourcing the ROS setup.bash by running 
+
 ```
-catkin_make or catkin build
+source /opt/ros/melodic/setup.bash
+```
+Or try ```catkin build``` with the [instructions](../Week01-02/InstallationGuide.md#troubleshooting-and-known-issues) in the "Troubleshooting and known issues" guide.
+
+Once the workspace has been built,
+```
 source ~/catkin_ws/devel/setup.bash
 ``` 
 The data_collector package will now be recognised by ROS. Now run
