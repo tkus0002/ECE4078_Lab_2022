@@ -35,9 +35,15 @@ The following is only a guideline to assist you to train a basic target detector
 4. Unzip [data_collector.zip](https://drive.google.com/file/d/1zxjZpJVTPvO_RGJGkwHJBu0dJRlktOqe/view?usp=sharing) to ```catkin_ws/src/```
 
 ### b) Changing environment textures
-Now open a terminal and run: 
+First, navigate to your ```catkin_ws``` directory, then open a terminal and run either ```catkin_make``` or ```catkin build```. If you run into trouble with this step with ```catkin_make```, try sourcing the ROS setup.bash by running 
+
 ```
-catkin_make or catkin build
+source /opt/ros/melodic/setup.bash
+```
+Or try ```catkin build``` with the [instructions](../Week01-02/InstallationGuide.md#troubleshooting-and-known-issues) in the "Troubleshooting and known issues" guide.
+
+Once the workspace has been built,
+```
 source ~/catkin_ws/devel/setup.bash
 ``` 
 The data_collector package will now be recognised by ROS. Now run
@@ -125,7 +131,7 @@ python3 main.py --dataset_dir ~/catkin_ws/src/data_collector/dataset --model_dir
 ```
 You can change the [default parameters](network/scripts/args.py) by adding flags, such as ```--lr 0.05```, when running [main.py](network/scripts/main.py). Parameters that you can change, what they represent and their default values are specified in [args.py](network/scripts/args.py).
 
-You will see some information printed regarding how a model performs for training and evalution during each epoch. Once training is done, a best performing model will be saved as "~/YourDir/Week05-06/network/scripts/model/model.best.pth". This model should be able to detect the different targets (apple, lemon, pear, orange, strawberry) and segment them from the background. Delete old checkpoints (.pth) before training new models.
+You will see some information printed regarding how a model performs for training and evalution during each epoch. Once training is done, a best performing model will be saved as "~/YourDir/Week05-06/network/scripts/model/model.best.pth". This model should be able to detect the different targets (red apple, yellow lemon, pear, orange, strawberry) and segment them from the background. Delete old checkpoints (.pth) before training new models.
 
 If you would like to train your neural network on Google Colab, upload the [ECE4078_2022_Lab_M3_Colab folder](network/ECE4078_2022_Lab_M3_Colab) with your dataset included (images, labels, and the hdf5 files) to your Google Drive. Open [main_colab.ipynb](network/ECE4078_2022_Lab_M3_Colab/main_colab.ipynb) in Colab and then run its cells (you can change the default parameters in [args.py](network/ECE4078_2022_Lab_M3_Colab/args.py)). If you would like to use GPU or TPU with Colab, in the top menu, go to "Runtime" -> "Change runtime type" -> "Hardware accelerator" -> select "GPU" or "TPU" in the dropdown menu. After the training is done, you can view the performance of the trained network on 4 test images using [detector_debugger.ipynb](network/ECE4078_2022_Lab_M3_Colab/detector_debugger.ipynb), and you can download the generated best model "model.best.pth" to your local directory for the detector to use.
 
