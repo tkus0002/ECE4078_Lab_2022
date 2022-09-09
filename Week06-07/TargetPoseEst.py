@@ -29,7 +29,7 @@ def get_bounding_box(target_number, image_path):
 
 # read in the list of detection results with bounding boxes and their matching robot pose info
 def get_image_info(base_dir, file_path, image_poses):
-    # there are at most three types of targets in each image
+    # there are at most five types of targets in each image
     target_lst_box = [[], [], [], [], []]
     target_lst_pose = [[], [], [], [], []]
     completed_img_dict = {}
