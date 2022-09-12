@@ -1,4 +1,5 @@
 # estimate the pose of a target object detected
+from pyexpat.errors import XML_ERROR_ABORTED
 import numpy as np
 import json
 import os
@@ -87,6 +88,26 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         # TODO: compute pose of the target based on bounding box info and robot's pose
         target_pose = {'y': 0.0, 'x': 0.0}
         
+        cam_res = 640 # camera resolution in pixels
+
+        A = focal_length * true_height / box[3][i] # actual depth of object
+ 
+        x_robot = robot_pose[0][i]
+        y_robot = robot_pose[1][i]
+        theta_robot = robot_pose[2][i]
+
+        x_camera = cam_res/2 - box[0][i]
+        theta_camera = np.arctan(x_camera/a)
+        theta_total = theta_robot + theta_camera
+
+        y_object = A * np.cos(theta_total)
+        x_object = A * np.cos(theta_total)
+        
+        x_object_world = x_robot + x_object
+        y_object_world = y_robot + y_object
+
+        target_pose = {'y':y_object_world,'x':x_object_world}
+
         target_pose_dict[target_list[target_num-1]] = target_pose
         ###########################################
     
