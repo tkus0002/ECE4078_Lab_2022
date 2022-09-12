@@ -113,6 +113,27 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
     
     return target_pose_dict
 
+# EXTRA: to changeSS
+def mean_fruit(fruit_est):
+    while len(fruit_est) > 2:
+        min_dist = 9999
+        #find two points close to each other
+        for i, fruit1 in enumerate(fruit_est):
+            for j, fruit2 in enumerate(fruit_est):
+                if (fruit1[0] != fruit2[0]) or (fruit1[1] != fruit2[1]): #if not same fruit
+                    distance = np.sqrt((fruit1[1]-fruit2[1])**2+(fruit1[0]-fruit2[0])**2)
+                    if distance < min_dist:
+                        min_dist = distance
+                        min1 = i
+                        min2 = j
+        #merge two points by averaging
+        x_avg = (fruit_est[min1][1] + fruit_est[min2][1])/2 #averaging x
+        y_avg = (fruit_est[min1][0] + fruit_est[min2][0])/2 #averaging y
+        fruit_est = np.delete(fruit_est,(min1, min2), axis=0)
+        fruit_est = np.vstack((fruit_est, [y_avg,x_avg]))
+    return fruit_est
+
+
 # merge the estimations of the targets so that there are at most 3 estimations of each target type
 def merge_estimations(target_pose_dict):
     target_pose_dict = target_pose_dict
@@ -136,15 +157,15 @@ def merge_estimations(target_pose_dict):
     ######### Replace with your codes #########
     # TODO: the operation below takes the first three estimations of each target type, replace it with a better merge solution
     if len(apple_est) > 2:
-        apple_est = apple_est[0:2]
+        apple_est = mean_fruit(apple_est)
     if len(lemon_est) > 2:
-        lemon_est = lemon_est[0:2]
+        lemon_est = mean_fruit(lemon_est)
     if len(pear_est) > 2:
-        pear_est = pear_est[0:2]
+        pear_est = mean_fruit(pear_est)
     if len(orange_est) > 2:
-        orange_est = orange_est[0:2]
+        orange_est = mean_fruit(orange_est)
     if len(strawberry_est) > 2:
-        strawberry_est = strawberry_est[0:2]
+        strawberry_est = mean_fruit(strawberry_est)
 
     for i in range(2):
         try:
