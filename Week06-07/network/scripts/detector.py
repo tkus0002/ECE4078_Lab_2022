@@ -19,7 +19,6 @@ class Detector:
             self.model = self.model.cuda()
         else:
             self.use_gpu = False
-        self.load_weights(ckpt)
         #The model is then set to evaluation mode
         self.model = self.model.eval()
 
