@@ -6,7 +6,7 @@ import cmd_printer
 import numpy as np
 import torch
 from args import args
-from res18_skip import Resnet18Skip
+#from res18_skip import Resnet18Skip
 import cv2
 
 class Detector:
