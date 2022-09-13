@@ -33,7 +33,7 @@ class Detector:
         #Getting the coordinates for the bounding box produced by Yolo
         num_preds = len(pred.pandas().xyxy[0])
         #Making a result array to return the predictions
-        pred_results = np.array[(num_preds,5)]
+        pred_results = np.array((num_preds,5))
         #Going throuch prediction and gettring the bounding box and class prediction
         for i in range(num_preds):
             #Get the class
