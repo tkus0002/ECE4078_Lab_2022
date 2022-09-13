@@ -34,7 +34,8 @@ class Operate:
         else:
             shutil.rmtree(self.folder)
             os.makedirs(self.folder)
-        
+        #Creating a bounding box atrribut
+        self.bound_boxes = np.array((10,5))
         # initialise data parameters
         if args.play_data:
             self.pibot = dh.DatasetPlayer("record")
@@ -119,10 +120,11 @@ class Operate:
     # using computer vision to detect targets
     def detect_target(self):
         if self.command['inference'] and self.detector is not None:
-            self.detector_output, self.network_vis = self.detector.detect_single_image(self.img)
+            self.detector_output, self.network_vis,self.bound_boxes = self.detector.detect_single_image(self.img)
             self.command['inference'] = False
             self.file_output = (self.detector_output, self.ekf)
-            self.notification = f'{len(np.unique(self.detector_output))-1} target type(s) detected'
+            #self.notification = f'{len(np.unique(self.detector_output))-1} target type(s) detected'
+            self.notification = f'{self.network_vis.shape[0]} target type(s) detected'
 
     # save raw images taken by the camera
     def save_image(self):
@@ -159,8 +161,8 @@ class Operate:
         # save inference with the matching robot pose and detector labels
         if self.command['save_inference']:
             if self.file_output is not None:
-                #image = cv2.cvtColor(self.file_output[0], cv2.COLOR_RGB2BGR)
-                self.pred_fname = self.output.write_image(self.file_output[0],
+                image = cv2.cvtColor(self.file_output[0], cv2.COLOR_RGB2BGR)
+                self.pred_fname = self.output.write_image(image,
                                                         self.file_output[1])
                 self.notification = f'Prediction is saved to {operate.pred_fname}'
             else:
