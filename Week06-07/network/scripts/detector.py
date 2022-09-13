@@ -12,7 +12,7 @@ import cv2
 class Detector:
     def __init__(self, ckpt, use_gpu=False):
         #Loading the custom Yolov5 model
-        self.model = torch.hub.load('ultralytics/yolov5', 'custom', ckpt, force_reload=True)
+        self.model = torch.hub.load('ultralytics/yolov5', 'custom', path=ckpt, force_reload=True)
 
         if torch.cuda.torch.cuda.device_count() > 0 and use_gpu:
             self.use_gpu = True
@@ -43,9 +43,8 @@ class Detector:
             xu = pred.pandas().xyxy[0]['xmax'][i]
             yl = pred.pandas().xyxy[0]['ymin'][i]
             yu = pred.pandas().xyxy[0]['ymax'][i]
-            #Combining the outputs into a np array with class, xmin,xmax,ymin,ymax
             pred_results[i] = [predic_class,xl,xu,yl,yu]
         
-        return pred.render()[0],pred_results
+        return np.squeeze(pred.render()),np.squeeze(pred.render()),pred_results
 
 
