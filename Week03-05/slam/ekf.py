@@ -95,13 +95,13 @@ class EKF:
         #Robot is going in a straight line
         
 
-        if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
-            Q = self.predict_covariance(raw_drive_meas)
-            self.P = F @ self.P @F.T +0.5*Q
-            if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
-                self.P=self.P *0.5
+        #if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
+        #    Q = self.predict_covariance(raw_drive_meas)
+        #    self.P = F @ self.P @F.T +0.5*Q
+        #    if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
+        #        self.P=self.P *0.5
         #Robot is turning hence more uncertainty
-        else:
+        #else:
             Q = self.predict_covariance(raw_drive_meas)
             self.P = F @ self.P @F.T +0.5*Q
             self.P = self.P*0.5
@@ -141,7 +141,7 @@ class EKF:
         #Correcting Covariance
         self.P = (np.eye(x.shape[0]) - K @ H) @ self.P
         #Print the current state
-        #print("\n\nx = "+str(x[0])
+        print("\n\nx = "+str(x[0])
         #print("\ny = "+str(x[1]))
         #print("\ntheta = "+str(x[2]))
 
