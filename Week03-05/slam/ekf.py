@@ -102,9 +102,9 @@ class EKF:
         #        self.P=self.P *0.5
         #Robot is turning hence more uncertainty
         #else:
-            Q = self.predict_covariance(raw_drive_meas)
-            self.P = F @ self.P @F.T +0.5*Q
-            self.P = self.P*0.5
+        Q = self.predict_covariance(raw_drive_meas)
+        self.P = F @ self.P @F.T +0.5*Q
+        self.P = self.P*0.5
 
 
     # the update step of EKF
