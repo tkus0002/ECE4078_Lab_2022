@@ -1,0 +1,22 @@
+## Launching the simulator environment
+
+source ~/catkin_ws/devel/setup.bash
+roslaunch penguinpi_gazebo ECE4078.launch
+
+## Spawning objects
+
+source ~/catkin_ws/devel/setup.bash
+rosrun penguinpi_gazebo scene_manager.py -l M2_Sim.txt
+
+rosrun penguinpi_gazebo scene_manager.py -l map1.txt
+rosrun penguinpi_gazebo scene_manager.py -l m2_sim_final.txt
+
+## Evaluating RMSE
+python3 SLAM_eval.py M2_Sim.txt Week03-05/lab_output/slam.txt
+
+
+## Play around with the rosrun penguinpi_gazebo scene_manager.py command using the following variations:
+
+Run without -l map1.txt tag to spawn objects at random locations
+Run with -d tag to remove the spawned objects
+Run with -s NAME.txt to save a new map
