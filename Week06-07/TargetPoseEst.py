@@ -113,7 +113,7 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
     
     return target_pose_dict
 
-# EXTRA: to changeSS
+# EXTRA: to changes
 def mean_fruit(fruit_est):
     while len(fruit_est) > 2:
         min_dist = 9999

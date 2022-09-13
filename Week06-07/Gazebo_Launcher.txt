@@ -1,3 +1,6 @@
+# VirtualBox (username: ece4078 password: 2021Lab)
+https://github.com/tkus0002/ECE4078_Lab_2022/blob/main/Week01-02/InstallationGuide.md
+
 ## Launching the simulator environment
 
 source ~/catkin_ws/devel/setup.bash
