@@ -103,8 +103,8 @@ class EKF:
         #Robot is turning hence more uncertainty
         #else:
         Q = self.predict_covariance(raw_drive_meas)
-        self.P = F @ self.P @F.T +0.5*Q
-        self.P = self.P*0.5
+        self.P = F @ self.P @F.T + 0.5*Q
+        #self.P = self.P*0.5
 
 
     # the update step of EKF
@@ -127,7 +127,7 @@ class EKF:
         z_hat = z_hat.reshape((-1,1),order="F")
         H = self.robot.derivative_measure(self.markers, idx_list)
 
-        #x = self.get_state_vector()
+        x = self.get_state_vector()
 
         # TODO: add your codes here to compute the updated x
         #Computing the Kalman Gain
@@ -135,13 +135,13 @@ class EKF:
         K = self.P @ H.T @ np.linalg.inv(S)
         #Adjusting the correct state
         y = z - z_hat
-        x = self.get_state_vector() + K @ y
+        x = x + K @ y
         #Getting state estimate
         self.set_state_vector(x)
         #Correcting Covariance
         self.P = (np.eye(x.shape[0]) - K @ H) @ self.P
         #Print the current state
-        print("\n\nx = "+str(x[0]))
+        #print("\n\nx = "+str(x[0]))
         #print("\ny = "+str(x[1]))
         #print("\ntheta = "+str(x[2]))
 
