@@ -21,3 +21,7 @@ python3 CV_eval.py TRUEMAP.txt lab_output/targets.txt
 Run without -l map1.txt tag to spawn objects at random locations
 Run with -d tag to remove the spawned objects
 Run with -s NAME.txt to save a new map
+
+*map only showing lemons and apples
+*slam not working
+*no position output
