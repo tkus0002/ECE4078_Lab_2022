@@ -39,6 +39,7 @@ class Detector:
         for i in range(num_preds):
             #Get the class
             predic_class = int(pred.pandas().xyxy[0]["class"][i])
+            probability = pred.pandas().xyxy[0]['confidence'][i]
             #Get the corners of the bounding box
             xl = pred.pandas().xyxy[0]['xmin'][i]
             xu = pred.pandas().xyxy[0]['xmax'][i]
@@ -46,7 +47,8 @@ class Detector:
             yu = pred.pandas().xyxy[0]['ymax'][i]
             pred_results[i,:] = np.array([predic_class,xl,xu,yl,yu])
             #Writing the bounding boxes to a text file 
-            np.savetext(file_result,pred_results[i,:])
+            stored_result = np.array([predic_class,probability,xl,xu,yl,yu])
+            np.savetext(file_result,stored_result)
         return np.squeeze(pred.render()),np.squeeze(pred.render()),pred_results
 
 
