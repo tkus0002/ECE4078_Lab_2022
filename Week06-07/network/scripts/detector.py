@@ -35,6 +35,7 @@ class Detector:
         #Making a result array to return the predictions
         pred_results = np.zeros((num_preds,5))
         #Going throuch prediction and gettring the bounding box and class prediction
+        file_result = open('boxes.txt', 'a')
         for i in range(num_preds):
             #Get the class
             predic_class = int(pred.pandas().xyxy[0]["class"][i])
@@ -44,9 +45,8 @@ class Detector:
             yl = pred.pandas().xyxy[0]['ymin'][i]
             yu = pred.pandas().xyxy[0]['ymax'][i]
             pred_results[i,:] = np.array([predic_class,xl,xu,yl,yu])
-        #Writing the bounding boxes to a text file 
-        with open('boxes.txt', 'a') as f:
-            f.write(str(np.array([predic_class,xl,xu,yl,yu])))
+            #Writing the bounding boxes to a text file 
+            np.savetext(file_result,pred_results[i,:])
         return np.squeeze(pred.render()),np.squeeze(pred.render()),pred_results
 
 
