@@ -43,7 +43,7 @@ class Detector:
             xu = pred.pandas().xyxy[0]['xmax'][i]
             yl = pred.pandas().xyxy[0]['ymin'][i]
             yu = pred.pandas().xyxy[0]['ymax'][i]
-            pred_results[i][:] = np.array([predic_class,xl,xu,yl,yu])
+            pred_results[i,:] = np.array([predic_class,xl,xu,yl,yu])
         
         return np.squeeze(pred.render()),np.squeeze(pred.render()),pred_results
 
