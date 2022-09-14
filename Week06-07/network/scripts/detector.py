@@ -48,7 +48,7 @@ class Detector:
             pred_results[i,:] = np.array([predic_class,xl,xu,yl,yu])
             #Writing the bounding boxes to a text file 
             stored_result = np.array([predic_class,probability,xl,xu,yl,yu])
-            np.savetext(file_result,stored_result)
+            np.savetxt(file_result,stored_result)
         return np.squeeze(pred.render()),np.squeeze(pred.render()),pred_results
 
 
