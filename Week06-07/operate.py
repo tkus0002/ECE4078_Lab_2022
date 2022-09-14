@@ -168,6 +168,8 @@ class Operate:
             else:
                 self.notification = f'No prediction in buffer, save ignored'
             self.command['save_inference'] = False
+            #Writing the bounding boxes to a txt file 
+            
 
     # paint the GUI            
     def draw(self, canvas):

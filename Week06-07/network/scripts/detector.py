@@ -44,7 +44,9 @@ class Detector:
             yl = pred.pandas().xyxy[0]['ymin'][i]
             yu = pred.pandas().xyxy[0]['ymax'][i]
             pred_results[i,:] = np.array([predic_class,xl,xu,yl,yu])
-        
+        #Writing the bounding boxes to a text file 
+        with open('boxes.txt', 'a') as f:
+            f.write(np.array([predic_class,xl,xu,yl,yu]))
         return np.squeeze(pred.render()),np.squeeze(pred.render()),pred_results
 
 
