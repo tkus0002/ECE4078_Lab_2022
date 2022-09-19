@@ -77,7 +77,7 @@ The following point system is the same for both the ```simulation_score``` and t
 4. If you have received three penalties (any of the penalties listed above) during a run, you are disqualified for that run and will receive zero score
 	- e.g. zero score for colliding into any object 3 times or collided into 2 objects + out of the boundary once
 
-5. The end condition of a run is when the robot has driven pass the first two fruits and stops within 1m of the last target fruit, then your score for that run will be calculated 
+5. Then end condition of a run is determined by the robot having stopped by the first two fruits, and clearly stopped within 1m of the last fruit. 1m is the acceptable distance to show that the last fruit was the intended stopping location,  while marks will only be given for stopping distances of <0.5m. With these conditions met, your score for that run will be calculated
 	- If you decide to stop the run before the end condition, you will get zero score for that run
 	- Your robot has to make a visible attempt to try to find all the target fruits, to at least drive pass them even if the robot may not accurately stop within 0.5m of the target. Therefore, if your robot only reaches the first fruit and just stops there, you will not receive any score, until the condition of a run has been satisfied
 
@@ -85,7 +85,7 @@ The following point system is the same for both the ```simulation_score``` and t
 
 7. If the robot reaches the target fruits in the wrong order, you will receive zero score for that run
 
-8. We will check your code to see if you have implemented to appropriate algorithms for the levels you have attempted. For example, if you have somehow collected 1 or 2 fruits in Level 2 by luck, but have not implemeneted any path planning algorithms, you will still receive zero score for your attempts 
+8. We will check your code to see if you have implemented to appropriate algorithms for the levels you have attempted. To gain credit for level 2 or 3, we must find evidence of path planning, or obstacle detection and avoidance (respectively) in your code. Successfully collecting fruit and/or avoiding collisions at these levels by luck will not grant you those marks by default
 
 9. The best run/attempt will be considered as your final score
 
