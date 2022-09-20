@@ -1,6 +1,7 @@
 # M4 - Autonomous fruit searching
 
 # basic python packages
+from math import sqrt
 import sys, os
 import cv2
 import numpy as np
@@ -113,12 +114,15 @@ def drive_to_point(waypoint, robot_pose):
     wheel_vel = 30 # tick
     
     # turn towards the waypoint
-    turn_time = 0.0 # replace with your calculation
+    omega = 2*np.pi*baseline/wheel_vel
+    turn_angle = robot_pose[-1]
+    turn_time = turn_angle/omega# replace with your calculation
     print("Turning for {:.2f} seconds".format(turn_time))
     ppi.set_velocity([0, 1], turning_tick=wheel_vel, time=turn_time)
     
     # after turning, drive straight to the waypoint
-    drive_time = 0.0 # replace with your calculation
+    dist_to_point = np.sqrt((waypoint[0]-robot_pose[0])**2+(waypoint[1]-robot_pose[1])**2)
+    drive_time = dist_to_point/(scale*wheel_vel) # replace with your calculation
     print("Driving for {:.2f} seconds".format(drive_time))
     ppi.set_velocity([1, 0], tick=wheel_vel, time=drive_time)
     ####################################################
