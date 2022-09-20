@@ -8,10 +8,13 @@ import ast
 # import cv2
 import math
 from machinevisiontoolbox import Image
-
+from network.scripts.detector import Detector
 import matplotlib.pyplot as plt
 import PIL
 
+#Defining Yolo place the model weight filepath into the weights_path variable
+weights_path =  'network/scripts/model/best.pt'
+Yolo = Detector(weights_path, use_gpu=False)
 # use the machinevision toolbox to get the bounding box of the detected target(s) in an image
 def get_bounding_box(target_number, image_path):
     image = PIL.Image.open(image_path).resize((640,480), PIL.Image.NEAREST)
@@ -26,6 +29,10 @@ def get_bounding_box(target_number, image_path):
     # plt.annotate(str(fruit_number), np.array(blobs[0].centroid).reshape(2,))
     # plt.show()
     # assert len(blobs) == 1, "An image should contain only one object of each target type"
+    #Pssing the image through the network
+    _,_,yolo_results= Yolo.detect_single_image(image)
+    #Creating the box from the yellow results
+    box = yolo_results[0,[1,2,3,4]]
     return box
 
 # read in the list of detection results with bounding boxes and their matching robot pose info
@@ -221,6 +228,3 @@ if __name__ == "__main__":
         json.dump(target_est, fo)
     
     print('Estimations saved!')
-
-
-
