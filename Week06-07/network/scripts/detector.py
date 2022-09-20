@@ -2,7 +2,7 @@ import os
 import time
 from xml.etree.ElementTree import XML
 
-import cmd_printer
+#import cmd_printer
 import numpy as np
 import torch
 from args import args
