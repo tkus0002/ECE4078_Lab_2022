@@ -114,9 +114,9 @@ def drive_to_point(waypoint, robot_pose):
     wheel_vel = 30 # tick
     
     # turn towards the waypoint
-    omega = 2*np.pi*baseline/wheel_vel
+    #Calculate the angle required to turn
     turn_angle = robot_pose[-1]
-    turn_time = turn_angle/omega# replace with your calculation
+    turn_time = turn_angle*baseline/(wheel_vel*scale) #replace with your calculation
     print("Turning for {:.2f} seconds".format(turn_time))
     ppi.set_velocity([0, 1], turning_tick=wheel_vel, time=turn_time)
     
