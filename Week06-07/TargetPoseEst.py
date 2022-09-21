@@ -7,7 +7,7 @@ from pathlib import Path
 import ast
 # import cv2
 import math
-#from machinevisiontoolbox import Image
+from machinevisiontoolbox import Image
 from network.scripts.detector import Detector
 import matplotlib.pyplot as plt
 import PIL
