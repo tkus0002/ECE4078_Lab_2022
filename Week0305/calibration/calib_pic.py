@@ -5,6 +5,7 @@ from cv2 import aruco
 import matplotlib.pyplot as plt
 import os
 import sys
+"""HI"""
 
 sys.path.insert(0, "../util")
 from util.pibot import PenguinPi
