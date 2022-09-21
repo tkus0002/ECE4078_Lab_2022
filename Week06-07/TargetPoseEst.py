@@ -27,12 +27,9 @@ def get_bounding_box(target_number, image_path):
     #Pssing the image through the network
     _,_,yolo_results= Yolo.detect_single_image(image)
     #Creating the box from the yellow results
-    print(yolo_results)
-    box = yolo_results[0,[1,2,3,4]]
-    [[u1,u2],[v1,v2]] = yolo_results[0,[1,2,3,4]]
-    width = abs(u1-u2)
-    height = abs(v1-v2)
-    center = np.array([(u1+u2)/2,(v1+v2)/2])
+    width = abs(yolo_results[1]-yolo_results[2])
+    height = abs(yolo_results[3]-yolo_results[4])
+    center = np.array([(yolo_results[1]+yolo_results[2])/2,(yolo_results[3]+yolo_results[4])/2])
     box = [center[0], center[1], int(width), int(height)]
     return box
 
