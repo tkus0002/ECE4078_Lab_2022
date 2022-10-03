@@ -57,12 +57,9 @@ where ```mapping_factor = 0.2``` for simulation and ```mapping_factor = 0.15``` 
 If your robot shows indication of performing waypoint navigation, either through manually entering waypoints or autonomously navigating the arena, and there is evidence of waypoint navigation implementation in your code, then you will receive 10pts. 
 
 #### Fruit searching (50pts)
-Your robot has to perform the fruit searching task autonomously in order to get any point for this sub-task. You will receive 20pts for reaching the first fruit, and 15pts for each of the remaining fruits, which make up a total of 50pts. 
+Your robot has to perform the fruit searching task autonomously in order to get full marks for this sub-task. You will receive 20pts for reaching the first fruit, and 15pts for each of the remaining fruits, which make up a total of 50pts. 
 
-- Mapping (40pts)
-	- SLAM map (20pts): (0.2-Aligned_RMSE)x150, minimum 0pt, your "slam.txt" is used for this
-	- Targets map (20pts): (1-estimation_error)x30, minimum 0pt, your "targets.txt" is used for this
-
+If you choose to do this semi-autonomously (same as M4 Level 1), then you will receieve 40% of the marks (max of 20pts) for this component. You will receive 8pts for reaching the first fruit and 6 pts for each of the remaining fruits.
 
 ### Rules
 1. Penalty of -2pts for each fruit that the robot collides with
@@ -103,7 +100,7 @@ Refer to [M5_marking_instructions.md]()
 ## Tips
 Below are some suggestions on how you may improve your integrated system and live demo performance.
 
-### Genral remarks
+### General remarks
 - In the marking arenas of M5 and final demo, there will be 10 ArUco marker blocks, 3 types of fruit (1 each) to search and 2 types (2 each) as obstacles. At the starting location (0, 0, 0) the robot will be able to see at least one marker. The objects will have gaps in between them that the robot should be able to fit through. 
 - Make sure you have included everything required to run your demo in the submission. If you can't run the demo from your downloaded submission we can't allow you to run from your local working directory instead. 
 - Practice the demo process, especially the set-up steps, so that you are familiar with it
