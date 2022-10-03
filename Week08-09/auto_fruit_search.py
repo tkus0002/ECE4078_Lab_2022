@@ -9,11 +9,11 @@ import json
 import argparse
 import time
 
-# import SLAM components
-# sys.path.insert(0, "{}/slam".format(os.getcwd()))
-# from slam.ekf import EKF
-# from slam.robot import Robot
-# import slam.aruco_detector as aruco
+#import SLAM components
+sys.path.insert(0, "{}/slam".format(os.getcwd()))
+from slam.ekf import EKF
+from slam.robot import Robot
+import slam.aruco_detector as aruco
 
 # import utility functions
 sys.path.insert(0, "util")
@@ -139,6 +139,7 @@ def get_robot_pose():
 
     # update the robot pose [x,y,theta]
     robot_pose = [0.0,0.0,0.0] # replace with your calculation
+    robot_pose =EKF.get_state_vector()
     ####################################################
 
     return robot_pose
