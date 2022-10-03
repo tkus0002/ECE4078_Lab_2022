@@ -47,7 +47,7 @@ final_score = 0.8 x simulation_score + 0.2 x robot_score
 Before the fruit searching task, you may choose to manually drive the robot around first and create a map as ```slam.txt``` ([M2: SLAM](../Week03-05/)) and the list of detected target poses as ```targets.txt``` ([M3: CV](../Week06-07/)), or you can generate the arena map and the target poses during the autonomous searching task. Eitherway, we will evaulate your ```slam.txt``` and ```targets.txt``` using the following equations:
 
 ```
-mapping_score = (mapping_factor - Aligned_RMSE)/(score_factor - 0.02) x 16 + NumberOfFoundMarkers x 0.4
+mapping_score = (mapping_factor - Aligned_RMSE)/(mapping_factor - 0.02) x 16 + NumberOfFoundMarkers x 0.4
 
 target_score = (1 - avg_estimation_error)/(1-0.025) x 16 + NumberOfFruitTypeFound x 0.8
 ```
