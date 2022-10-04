@@ -65,7 +65,8 @@ def get_image_info(base_dir, file_path, image_poses):
     
     img_vals = set(Image(base_dir / file_path, grey=True).image.reshape(-1))
     print(img_vals)
-    for target_num in img_vals:
+    #for target_num in img_vals:
+    for target_num in range(5):
         if target_num > 0:
             try:
                 box = get_bounding_box(target_num, base_dir/file_path) # [x,y,width,height]
