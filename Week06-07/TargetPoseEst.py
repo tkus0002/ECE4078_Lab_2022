@@ -70,11 +70,11 @@ def get_image_info(base_dir, file_path, image_poses):
     for target_num in range(box.shape[0]):
         if target_num > 0:
             try:
-                box_1D = box[target_num-1]
+                box_1D = box[target_num]
                 print(box_1D)
                 pose = image_poses[file_path] # [x, y, theta]
-                target_lst_box[target_num-1].append(box_1D) # bounding box of target
-                target_lst_pose[target_num-1].append(np.array(pose).reshape(3,)) # robot pose
+                target_lst_box[target_num].append(box_1D) # bounding box of target
+                target_lst_pose[target_num].append(np.array(pose).reshape(3,)) # robot pose
             except ZeroDivisionError:
                 pass
 
