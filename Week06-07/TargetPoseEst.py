@@ -19,7 +19,14 @@ Yolo = Detector(weights_path, use_gpu=False)
 def get_bounding_box(target_number, image_path):
     image = PIL.Image.open(image_path).resize((640,480), PIL.Image.NEAREST)
     target = Image(image)==target_number
-    #blobs = target.blobs()
+
+    blobs = target.blobs()
+    [[u1,u2],[v1,v2]] = blobs[0].bbox # bounding box
+    width = abs(u1-u2)
+    height = abs(v1-v2)
+    center = np.array(blobs[0].centroid).reshape(2,)
+    box = [center[0], center[1], int(width), int(height)] # box=[x,y,width,height]
+    """
     # plt.imshow(fruit.image)
     # plt.annotate(str(fruit_number), np.array(blobs[0].centroid).reshape(2,))
     # plt.show()
@@ -31,6 +38,7 @@ def get_bounding_box(target_number, image_path):
     height = abs(yolo_results[3]-yolo_results[4])
     center = np.array([(yolo_results[1]+yolo_results[2])/2,(yolo_results[3]+yolo_results[4])/2])
     box = [center[0], center[1], int(width), int(height)]
+    """
     return box
 
 # read in the list of detection results with bounding boxes and their matching robot pose info
