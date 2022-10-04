@@ -55,8 +55,8 @@ def get_bounding_box(target_number, image_path):
 # read in the list of detection results with bounding boxes and their matching robot pose info
 def get_image_info(base_dir, file_path, image_poses):
     # there are at most five types of targets in each image
-    target_lst_box = [[], [], [], [], []]
-    target_lst_pose = [[], [], [], [], []]
+    target_lst_box = [[], [], [], [], [],[]]
+    target_lst_pose = [[], [], [], [], [],[]]
     completed_img_dict = {}
 
     # add the bounding box info of each target in each image
@@ -69,7 +69,7 @@ def get_image_info(base_dir, file_path, image_poses):
             try:
                 box = get_bounding_box(target_num, base_dir/file_path) # [x,y,width,height]
                 pose = image_poses[file_path] # [x, y, theta]
-                target_lst_box[target_num-1].append(box) # bouncing box of target
+                target_lst_box[target_num-1].append(box) # bounding box of target
                 target_lst_pose[target_num-1].append(np.array(pose).reshape(3,)) # robot pose
             except ZeroDivisionError:
                 pass
