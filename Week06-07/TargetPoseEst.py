@@ -43,12 +43,13 @@ def get_bounding_box(target_number, image_path):
         center = np.array([(yolo_results[i][1]+yolo_results[i][2])/2,(yolo_results[i][3]+yolo_results[i][4])/2])
         box = [center[0], center[1], int(width), int(height)]
     """
-    i = target_number - 1
-    width = abs(yolo_results[i][1]-yolo_results[i][2])
-    height = abs(yolo_results[i][3]-yolo_results[i][4])
-    center = np.array([(yolo_results[i][1]+yolo_results[i][2])/2,(yolo_results[i][3]+yolo_results[i][4])/2])
-    box = [center[0], center[1], int(width), int(height)]
-
+    box = np.zeros((yolo_results.shape[0],4))
+    for i in range(yolo_results.shape[0]):
+        width = abs(yolo_results[i][1]-yolo_results[i][2])
+        height = abs(yolo_results[i][3]-yolo_results[i][4])
+        centre_0 = (yolo_results[i][1]+yolo_results[i][2])/2
+        centre_1 = (yolo_results[i][3]+yolo_results[i][4])/2
+        box[i] = [centre_0, centre_1, int(width), int(height)]
     return box
 
 # read in the list of detection results with bounding boxes and their matching robot pose info
@@ -63,14 +64,15 @@ def get_image_info(base_dir, file_path, image_poses):
     text_file_path = file_path.split('.')[0]+'.txt'
     
     img_vals = set(Image(base_dir / file_path, grey=True).image.reshape(-1))
-    print(img_vals)
     #for target_num in img_vals:
-    for target_num in range(5):
+    box = get_bounding_box(target_num, base_dir/file_path) # [x,y,width,height]
+
+    for target_num in range(box.shape[0]):
         if target_num > 0:
             try:
-                box = get_bounding_box(target_num, base_dir/file_path) # [x,y,width,height]
+                box_1D = box[target_num-1]
                 pose = image_poses[file_path] # [x, y, theta]
-                target_lst_box[target_num-1].append(box) # bounding box of target
+                target_lst_box[target_num-1].append(box_1D) # bounding box of target
                 target_lst_pose[target_num-1].append(np.array(pose).reshape(3,)) # robot pose
             except ZeroDivisionError:
                 pass
