@@ -34,7 +34,7 @@ def get_bounding_box(target_number, image_path):
     #Pssing the image through the network
     _,_,yolo_results= Yolo.detect_single_image(image)
     #Creating the box from the yellow results
-    print(yolo_results)
+    #print(yolo_results)
     shapes = yolo_results.shape
     """
     for i in range(shapes[0])
@@ -71,6 +71,7 @@ def get_image_info(base_dir, file_path, image_poses):
         if target_num > 0:
             try:
                 box_1D = box[target_num-1]
+                print(box_1D)
                 pose = image_poses[file_path] # [x, y, theta]
                 target_lst_box[target_num-1].append(box_1D) # bounding box of target
                 target_lst_pose[target_num-1].append(np.array(pose).reshape(3,)) # robot pose
