@@ -164,7 +164,7 @@ def mean_fruit(fruit_est):
         for i, fruit1 in enumerate(fruit_est):
             for j, fruit2 in enumerate(fruit_est):
                 if (fruit1[0] != fruit2[0]) or (fruit1[1] != fruit2[1]): #if not same fruit
-                    distance = np.sqrt((fruit1[1]-fruit2[1])**2+(fruit1[0]-fruit2[0])**2)
+                    distance = np.sqrt((fruit1[1]-fruit2[1])**2 + (fruit1[0]-fruit2[0])**2)
                     if distance < min_dist:
                         min_dist = distance
                         min1 = i
