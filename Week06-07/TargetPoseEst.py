@@ -35,12 +35,20 @@ def get_bounding_box(target_number, image_path):
     _,_,yolo_results= Yolo.detect_single_image(image)
     #Creating the box from the yellow results
     print(yolo_results)
-    
-    width = abs(yolo_results[1]-yolo_results[2])
-    height = abs(yolo_results[3]-yolo_results[4])
-    center = np.array([(yolo_results[1]+yolo_results[2])/2,(yolo_results[3]+yolo_results[4])/2])
+    shapes = yolo_results.shape
+    """
+    for i in range(shapes[0])
+        width = abs(yolo_results[i][1]-yolo_results[i][2])
+        height = abs(yolo_results[i][3]-yolo_results[i][4])
+        center = np.array([(yolo_results[i][1]+yolo_results[i][2])/2,(yolo_results[i][3]+yolo_results[i][4])/2])
+        box = [center[0], center[1], int(width), int(height)]
+    """
+    i=0
+    width = abs(yolo_results[i][1]-yolo_results[i][2])
+    height = abs(yolo_results[i][3]-yolo_results[i][4])
+    center = np.array([(yolo_results[i][1]+yolo_results[i][2])/2,(yolo_results[i][3]+yolo_results[i][4])/2])
     box = [center[0], center[1], int(width), int(height)]
-    
+
     return box
 
 # read in the list of detection results with bounding boxes and their matching robot pose info
