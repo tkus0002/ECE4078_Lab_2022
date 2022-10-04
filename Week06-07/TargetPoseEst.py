@@ -170,9 +170,13 @@ def mean_fruit(fruit_est):
                         min1 = i
                         min2 = j
         #merge two points by averaging
+        print("")
         print(fruit_est[min1][1])
         print(fruit_est[min2][1])
-        
+        print("")
+        print(fruit_est[min1][0])
+        print(fruit_est[min2][0])
+
         x_avg = (fruit_est[min1][1] + fruit_est[min2][1])/2 #averaging x
         y_avg = (fruit_est[min1][0] + fruit_est[min2][0])/2 #averaging y
         fruit_est = np.delete(fruit_est,(min1, min2), axis=0)
