@@ -151,7 +151,6 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         y_object_world = y_robot + y_object
 
         target_pose = {'y':y_object_world,'x':x_object_world}
-        print(target_pose)
         target_pose_dict[target_list[target_num-1]] = target_pose
         ###########################################
     
@@ -171,6 +170,9 @@ def mean_fruit(fruit_est):
                         min1 = i
                         min2 = j
         #merge two points by averaging
+        print(fruit_est[min1][1])
+        print(fruit_est[min2][1])
+        
         x_avg = (fruit_est[min1][1] + fruit_est[min2][1])/2 #averaging x
         y_avg = (fruit_est[min1][0] + fruit_est[min2][0])/2 #averaging y
         fruit_est = np.delete(fruit_est,(min1, min2), axis=0)
