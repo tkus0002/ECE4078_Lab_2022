@@ -43,7 +43,7 @@ def get_bounding_box(target_number, image_path):
         center = np.array([(yolo_results[i][1]+yolo_results[i][2])/2,(yolo_results[i][3]+yolo_results[i][4])/2])
         box = [center[0], center[1], int(width), int(height)]
     """
-    i=0
+    i = target_number - 1
     width = abs(yolo_results[i][1]-yolo_results[i][2])
     height = abs(yolo_results[i][3]-yolo_results[i][4])
     center = np.array([(yolo_results[i][1]+yolo_results[i][2])/2,(yolo_results[i][3]+yolo_results[i][4])/2])
