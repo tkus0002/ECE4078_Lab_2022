@@ -44,14 +44,38 @@ final_score = 0.8 x simulation_score + 0.2 x robot_score
 ```
 
 #### Arena mapping (40pts)
-Before the fruit searching task, you may choose to manually drive the robot around first and create a map as ```slam.txt``` ([M2: SLAM](../Week03-05/)) and the list of detected target poses as ```targets.txt``` ([M3: CV](../Week06-07/)), or you can generate the arena map and the target poses during the autonomous searching task. Eitherway, we will evaulate your ```slam.txt``` and ```targets.txt``` using the following equations:
+##### SLAM
+Before the fruit searching task, you may choose to manually drive the robot around first and create a map as ```slam.txt``` ([M2: SLAM](../Week03-05/)) and the list of detected target poses as ```targets.txt``` ([M3: CV](../Week06-07/)), or you can generate the arena map and the target poses during the autonomous searching task. Eitherway, we will evaulate your ```slam.txt```:
 
 ```
-mapping_score = (mapping_factor - Aligned_RMSE)/(mapping_factor - 0.02) x 16 + NumberOfFoundMarkers x 0.4
-
-target_score = (1 - avg_estimation_error)/(1-0.025) x 16 + NumberOfFruitTypeFound x 0.8
+mapping_score = (mapping_factor - Aligned_RMSE)/(score_factor - 0.02) x 16 + NumberOfFoundMarkers x 0.4
 ```
-where ```mapping_factor = 0.2``` for simulation and ```mapping_factor = 0.15``` for physical robot.
+
+where ```mapping_factor = 0.2``` for simulation and ```mapping_factor = 0.15``` for physical robot. The maximum mapping_score is 20pts and minimum mapping_score is 0
+
+##### Target pose estimation
+```targets.txt``` should contain the poses of 7 fruits (3x fruit-to-search and 4x obstacle fruits). Similar to M3, the target score for each fruit will be calculated based on the pose estimate error, using
+
+~~~
+target_score[fruit] = (1 - estimation_error[fruit])/(1-0.025) x 2.86
+~~~
+
+For example, if your robot needs to search for {apple, lemon, orange}, then there will be 2 x {pear, strawberry} as obstacles, and here is an example score 
+
+~~~
+target_score[apple_0] = 2.86    # 0 estimation_error
+target_score[lemon_0] = 2.86
+target_score[orange_0] = 2.86
+target_score[pear_0] = 2.86
+target_score[pear_1] = 2.86
+target_score[strawberry_0] = 1  # some estimation_error
+target_score[strawberry_1] = 0  # estimation_error > 1
+
+sum(target_score) = 15.3
+~~~
+
+The maximum sum(target_score) is 20pts and minimum sum(target_score) is 0.
+
 
 #### Waypoint navigation (10pts)
 If your robot shows indication of performing waypoint navigation, either through manually entering waypoints or autonomously navigating the arena, and there is evidence of waypoint navigation implementation in your code, then you will receive 10pts. 
@@ -119,7 +143,7 @@ Below are some suggestions on how you may improve your integrated system and liv
         cov = 2 # Higher covariance since turning is less consistent
     ```
 
-- In [ekf_sol.py](SLAM_sample/ekf_sol.py#L141) the second expression in the process noise equation is commented out since it may add too much noise to the model which accumulates even if the robot is idle. However, you can also add a condition to add this term only when the robot is moving or lower the noise. 
+- In [ekf.py](../Week03-05/slam/ekf.py#L129) the second expression in the process noise equation can be commented out since it may add too much noise to the model which accumulates even if the robot is idle. However, you can also add a condition to add this term only when the robot is moving or lower the noise. 
     ```
     Q[0:3,0:3] = self.robot.covariance_drive(raw_drive_meas) #+ 0.01*np.eye(3)
     ```
