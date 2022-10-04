@@ -140,7 +140,9 @@ class Robot:
 							lin_vel / ang_vel * (dt * np.cos(th2))
             Jac2[1,0] = -1 / ang_vel * (np.cos(th2) - np.cos(th))
             Jac2[1,1] = lin_vel/(ang_vel**2) * (np.cos(th2) - np.cos(th)) + \
-							-lin_vel / ang_vel * (-dt * np.sin(th2))
+							lin_vel / ang_vel * (dt * np.sin(th2))
+            #Jac2[1,1] = lin_vel/(ang_vel**2) * (np.cos(th2) - np.cos(th)) + \
+				#-lin_vel / ang_vel * (-dt * np.sin(th2))
             Jac2[2,1] = dt
 
         # Derivative of x,y,theta w.r.t. left_speed, right_speed

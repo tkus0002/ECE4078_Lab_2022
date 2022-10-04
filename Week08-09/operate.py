@@ -34,8 +34,10 @@ class Operate:
         else:
             shutil.rmtree(self.folder)
             os.makedirs(self.folder)
+
         #Creating a bounding box atrributFima
         self.bound_boxes = np.array((10,5))
+       
         # initialise data parameters
         if args.play_data:
             self.pibot = dh.DatasetPlayer("record")

@@ -93,18 +93,16 @@ class EKF:
 
         # TODO: add your codes here to compute the predicted drive
         #Robot is going in a straight line
-        
+        Q = self.predict_covariance(raw_drive_meas)
 
-        if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
-            Q = self.predict_covariance(raw_drive_meas)
-            self.P = F @ self.P @F.T +0.5*Q
-            if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
-                self.P=self.P *0.5
+        #if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
+        #    self.P = F @ self.P @F.T +0.5*Q
+        #    if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
+        #        self.P=self.P *0.5
         #Robot is turning hence more uncertainty
-        else:
-            Q = self.predict_covariance(raw_drive_meas)
-            self.P = F @ self.P @F.T +0.5*Q
-            self.P = self.P*0.5
+        #else:
+        self.P = F @ self.P @ F.T + Q#0.5*Q
+        #self.P = self.P*0.5
 
 
     # the update step of EKF
@@ -127,7 +125,7 @@ class EKF:
         z_hat = z_hat.reshape((-1,1),order="F")
         H = self.robot.derivative_measure(self.markers, idx_list)
 
-        #x = self.get_state_vector()
+        x = self.get_state_vector()
 
         # TODO: add your codes here to compute the updated x
         #Computing the Kalman Gain
@@ -135,16 +133,11 @@ class EKF:
         K = self.P @ H.T @ np.linalg.inv(S)
         #Adjusting the correct state
         y = z - z_hat
-        x = self.get_state_vector() + K @ y
+        x = x + K @ y
         #Getting state estimate
         self.set_state_vector(x)
         #Correcting Covariance
         self.P = (np.eye(x.shape[0]) - K @ H) @ self.P
-        #Print the current state
-        #print("\n\nx = "+str(x[0])
-        #print("\ny = "+str(x[1]))
-        #print("\ntheta = "+str(x[2]))
-
 
     def state_transition(self, raw_drive_meas):
         n = self.number_landmarks()*2 + 3
