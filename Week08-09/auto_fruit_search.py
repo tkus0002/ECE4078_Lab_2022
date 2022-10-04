@@ -9,11 +9,11 @@ import json
 import argparse
 import time
 
-# import SLAM components
-# sys.path.insert(0, "{}/slam".format(os.getcwd()))
-# from slam.ekf import EKF
-# from slam.robot import Robot
-# import slam.aruco_detector as aruco
+#import SLAM components
+sys.path.insert(0, "{}/slam".format(os.getcwd()))
+from slam.ekf import EKF
+from slam.robot import Robot
+import slam.aruco_detector as aruco
 
 # import utility functions
 sys.path.insert(0, "util")
@@ -124,7 +124,9 @@ def drive_to_point(waypoint, robot_pose):
     
     # turn towards the waypoint
     #Calculate the angle required to turn
-    turn_angle = robot_pose[-1]
+    dif_y = waypoint[1]-robot_pose[1]
+    dif_x = waypoint[0]-robot_pose[0]
+    turn_angle = abs(np.arctan(dif_y,dif_x)-robot_pose[-1])
     turn_time = turn_angle*baseline/(wheel_vel*scale) #replace with your calculation
     #Charlie - check line above for equation
     print("Turning for {:.2f} seconds".format(turn_time))
@@ -150,6 +152,7 @@ def get_robot_pose():
 
     # update the robot pose [x,y,theta]
     robot_pose = [0.0,0.0,0.0] # replace with your calculation
+    robot_pose =EKF.get_state_vector()
     ####################################################
 
     return robot_pose
