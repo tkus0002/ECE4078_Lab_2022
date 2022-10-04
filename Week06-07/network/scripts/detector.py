@@ -27,7 +27,6 @@ class Detector:
         tick = time.time()
         with torch.no_grad():
             pred = self.model.forward(np_img)
-        
         dt = time.time() - tick
         print(f'Inference Time {dt:.2f}s, approx {1/dt:.2f}fps', end="\r")
         #Getting the coordinates for the bounding box produced by Yolo

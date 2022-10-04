@@ -137,13 +137,13 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         
         cam_res = 640 # camera resolution in pixels
 
-        A = focal_length * true_height / box[3][i] # actual depth of object
+        A = focal_length * true_height / box[3][0] # actual depth of object
  
-        x_robot = robot_pose[0][i]
-        y_robot = robot_pose[1][i]
-        theta_robot = robot_pose[2][i]
+        x_robot = robot_pose[0][0]
+        y_robot = robot_pose[1][0]
+        theta_robot = robot_pose[2][0]
 
-        x_camera = cam_res/2 - box[0][i]
+        x_camera = cam_res/2 - box[0][0]
         theta_camera = np.arctan(x_camera/a)
         theta_total = theta_robot + theta_camera
 
@@ -155,7 +155,7 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
 
         target_pose = {'y':y_object_world,'x':x_object_world}
 
-        target_pose_dict[f'{target_list[target_num]}_{i}'] = target_pose
+        target_pose_dict[target_list[target_num-1]] = target_pose
         ###########################################
     
     return target_pose_dict
