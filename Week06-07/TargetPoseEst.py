@@ -144,7 +144,7 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         theta_robot = robot_pose[2][0]
 
         x_camera = cam_res/2 - box[0][0]
-        theta_camera = np.arctan(x_camera/a)
+        theta_camera = np.arctan(x_camera/focal_length)
         theta_total = theta_robot + theta_camera
 
         y_object = A * np.cos(theta_total)
