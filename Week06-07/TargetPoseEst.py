@@ -64,6 +64,7 @@ def get_image_info(base_dir, file_path, image_poses):
     text_file_path = file_path.split('.')[0]+'.txt'
     
     img_vals = set(Image(base_dir / file_path, grey=True).image.reshape(-1))
+    print(img_vals)
     for target_num in img_vals:
         if target_num > 0:
             try:
