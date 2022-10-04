@@ -1,4 +1,4 @@
-# estimate the pose of a target object detected
+    # estimate the pose of a target object detected
 from pyexpat.errors import XML_ERROR_ABORTED
 import numpy as np
 import json

@@ -42,6 +42,8 @@ def get_image_info(base_dir, file_path, image_poses):
 
     # add the bounding box info of each target in each image
     # target labels: 1 = apple, 2 = lemon, 3 = pear, 4 = orange, 5 = strawberry, 0 = not_a_target
+    text_file_path = file_path.split('.')[0]+'.txt'
+    
     img_vals = set(Image(base_dir / file_path, grey=True).image.reshape(-1))
     for target_num in img_vals:
         if target_num > 0:
@@ -53,13 +55,32 @@ def get_image_info(base_dir, file_path, image_poses):
             except ZeroDivisionError:
                 pass
 
+     #reading json data
+    """
+    with open(text_file_path,"r") as f:
+        data = json.load(f)
+        for fruit in data:
+            xmin = fruit['xmin']
+            ymin = fruit['ymin']
+            xmax = fruit['xmax']
+            ymax = fruit['ymax']
+            x = (xmin + xmax)/2
+            y = (ymin + ymax)/2
+            width = xmax - xmin
+            height = ymax - ymin
+
+            box = [x, y, width, height]
+            pose = image_poses[file_path] #[x, y, theta]
+            target_num = fruit['class']
+            target_lst_box[target_num].append(box)
+            target_lst_pose[target_num].append(np.array(pose).reshape(3,)) # robot pose
+        """
     # if there are more than one objects of the same type, combine them
     for i in range(5):
         if len(target_lst_box[i])>0:
             box = np.stack(target_lst_box[i], axis=1)
             pose = np.stack(target_lst_pose[i], axis=1)
             completed_img_dict[i+1] = {'target': box, 'robot': pose}
-        
     return completed_img_dict
 
 # estimate the pose of a target based on size and location of its bounding box in the robot's camera view and the robot's pose
@@ -113,7 +134,7 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
 
         target_pose = {'y':y_object_world,'x':x_object_world}
 
-        target_pose_dict[target_list[target_num-1]] = target_pose
+        target_pose_dict[f'{target_list[target_num]}_{i}'] = target_pose
         ###########################################
     
     return target_pose_dict
