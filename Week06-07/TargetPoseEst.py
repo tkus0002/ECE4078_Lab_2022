@@ -34,6 +34,7 @@ def get_bounding_box(target_number, image_path):
     #Pssing the image through the network
     _,_,yolo_results= Yolo.detect_single_image(image)
     #Creating the box from the yellow results
+    print(image_path)
     print(yolo_results)
     shapes = yolo_results.shape
     """
