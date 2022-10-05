@@ -1,10 +1,16 @@
 # estimate the pose of a target object detected
+from pyexpat.errors import XML_ERROR_ABORTED
 import numpy as np
 import json
 import os
 from pathlib import Path
 import ast
 # import cv2
+import math
+from machinevisiontoolbox import Image
+from network.scripts.detector import Detector
+import matplotlib.pyplot as plt
+import PIL
 
 import torch
 from sklearn.cluster import KMeans
@@ -184,15 +190,15 @@ def merge_estimations(target_pose_dict):
 
     ######### Replace with your codes #########
     # TODO: the operation below takes the first three estimations of each target type, replace it with a better merge solution
-    if len(apple_est) > 2:
+    if len(apple_est) > 1:
         apple_est = mean_fruit(apple_est)
-    if len(lemon_est) > 2:
+    if len(lemon_est) > 1:
         lemon_est = mean_fruit(lemon_est)
-    if len(pear_est) > 2:
+    if len(pear_est) > 1:
         pear_est = mean_fruit(pear_est)
-    if len(orange_est) > 2:
+    if len(orange_est) > 1:
         orange_est = mean_fruit(orange_est)
-    if len(strawberry_est) > 2:
+    if len(strawberry_est) > 1:
         strawberry_est = mean_fruit(strawberry_est)
 
     for i in range(2):
@@ -226,7 +232,8 @@ if __name__ == "__main__":
     fileK = "{}intrinsic.txt".format('./calibration/param/')
     camera_matrix = np.loadtxt(fileK, delimiter=',')
     base_dir = Path('./')
-    
+
+    weights_path =  'network/scripts/model/best.pt'
     
     # a dictionary of all the saved detector outputs
     image_poses = {}
