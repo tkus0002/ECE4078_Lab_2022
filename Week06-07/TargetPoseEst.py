@@ -101,7 +101,7 @@ def get_image_info(base_dir, file_path, image_poses):
             box = np.stack(target_lst_box[i], axis=1)
             pose = np.stack(target_lst_pose[i], axis=1)
             completed_img_dict[i+1] = {'target': box, 'robot': pose}
-    print(completed_img_dict)
+    #print(completed_img_dict)
     return completed_img_dict
 
 # estimate the pose of a target based on size and location of its bounding box in the robot's camera view and the robot's pose
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     for file_path in image_poses.keys():
         completed_img_dict = get_image_info(base_dir, file_path, image_poses)
         target_map[file_path] = estimate_pose(base_dir, camera_matrix, completed_img_dict)
-
+    print(target_map)
     # merge the estimations of the targets so that there are at most 3 estimations of each target type
     target_est = merge_estimations(target_map)
                      
