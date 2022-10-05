@@ -44,6 +44,8 @@ def get_bounding_box(target_number, image_path):
         box = [center[0], center[1], int(width), int(height)]
     """
     box = np.zeros((yolo_results.shape[0],4))
+    print(box)
+
     for i in range(yolo_results.shape[0]):
         width = abs(yolo_results[i][1]-yolo_results[i][2])
         height = abs(yolo_results[i][3]-yolo_results[i][4])
@@ -99,6 +101,7 @@ def get_image_info(base_dir, file_path, image_poses):
             box = np.stack(target_lst_box[i], axis=1)
             pose = np.stack(target_lst_pose[i], axis=1)
             completed_img_dict[i+1] = {'target': box, 'robot': pose}
+    print(completed_img_dict)
     return completed_img_dict
 
 # estimate the pose of a target based on size and location of its bounding box in the robot's camera view and the robot's pose
