@@ -10,15 +10,15 @@ import torch
 from sklearn.cluster import KMeans
 
 def get_bounding_box(fruit_select):
-
-    xmin = fruit_select[0]
-    ymin = fruit_select[1]
-    xmax = fruit_select[2]
-    ymax = fruit_select[3]
+    #Multiplying the pixel values by the appropraite scale
+    xmin = fruit_select[0] *480/416
+    ymin = fruit_select[1] *640/416
+    xmax = fruit_select[2] *480/416
+    ymax = fruit_select[3] *640/416
     fruit = fruit_select[5]
 
-    fruit_xcent = (xmin + xmax)/2 - 320
-    fruit_ycent = (ymin + ymax)/2 - 240
+    fruit_xcent = (xmin + xmax)/2
+    fruit_ycent = (ymin + ymax)/2 
     fruit_width = xmax - xmin
     fruit_height = ymax - ymin
 
