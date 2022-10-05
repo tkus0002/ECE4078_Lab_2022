@@ -273,7 +273,7 @@ def merge_estimations(target_pose_dict):
 
 if __name__ == "__main__":
     #Make sure the weight file corresponds to the test image.
-
+    weights_path =  'network/scripts/model/best.pt'
     model = torch.hub.load('ultralytics/yolov5', 'custom', path=weight_path, force_reload=True)
     #Downloads from github once. We can make it do this locally if necessary.
     
@@ -286,7 +286,6 @@ if __name__ == "__main__":
     camera_matrix = np.loadtxt(fileK, delimiter=',')
     base_dir = Path('./')
     
-    weights_path =  'network/scripts/model/best.pt'
     
     # a dictionary of all the saved detector outputs
     image_poses = {}
