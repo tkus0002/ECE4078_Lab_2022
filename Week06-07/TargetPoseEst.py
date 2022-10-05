@@ -266,26 +266,17 @@ def merge_estimations(target_pose_dict):
             target_est['strawberry_'+str(i)] = {'y':strawberry_est[i][0], 'x':strawberry_est[i][1]}
         except:
             pass
-    ###########################################
-        
+    ########################################### 
     return target_est
-
 
 if __name__ == "__main__":
     #Make sure the weight file corresponds to the test image.
-    weights_path =  'network/scripts/model/best.pt'
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path=weight_path, force_reload=True)
-    #Downloads from github once. We can make it do this locally if necessary.
-    
-
-####   Intrinsic for real set. Sim for simulator.
-####
-
+    weight_path =  'network/scripts/model/best.pt'
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path=weight_path, force_reload=True)    
     calibration_path = 'calibration/param/'
     fileK = "{}intrinsic.txt".format('./calibration/param/')
     camera_matrix = np.loadtxt(fileK, delimiter=',')
     base_dir = Path('./')
-    
     
     # a dictionary of all the saved detector outputs
     image_poses = {}
@@ -308,6 +299,4 @@ if __name__ == "__main__":
     with open(base_dir/'lab_output/targets.txt', 'w') as fo:
         json.dump(target_est, fo)
     
-    print('Estimations saved :)')
-
-
+    print('Estimations saved')
