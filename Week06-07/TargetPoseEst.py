@@ -44,7 +44,7 @@ def get_bounding_box(target_number, image_path):
         box = [center[0], center[1], int(width), int(height)]
     """
     box = np.zeros((yolo_results.shape[0],4))
-    print(box)
+    #print(box)
 
     for i in range(yolo_results.shape[0]):
         width = abs(yolo_results[i][1]-yolo_results[i][2])
@@ -130,7 +130,7 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         box = completed_img_dict[target_num]['target'] # [[x],[y],[width],[height]]
         robot_pose = completed_img_dict[target_num]['robot'] # [[x], [y], [theta]]
         true_height = target_dimensions[target_num-1][2]
-        print(target_num)
+        #print(target_num)
         
         ######### Replace with your codes #########
         # TODO: compute pose of the target based on bounding box info and robot's pose
@@ -155,8 +155,8 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         y_object_world = y_robot + y_object
 
         target_pose = {'y':y_object_world,'x':x_object_world}
-        print(target_pose)
-        print("")
+        #print(target_pose)
+        #print("")
         target_pose_dict[target_list[target_num-1]] = target_pose
         ###########################################
     
@@ -176,13 +176,14 @@ def mean_fruit(fruit_est):
                         min1 = i
                         min2 = j
         #merge two points by averaging
+        """
         print("")
         print(fruit_est[min1][1])
         print(fruit_est[min2][1])
         print("")
         print(fruit_est[min1][0])
         print(fruit_est[min2][0])
-
+        """
         x_avg = (fruit_est[min1][1] + fruit_est[min2][1])/2 #averaging x
         y_avg = (fruit_est[min1][0] + fruit_est[min2][0])/2 #averaging y
         fruit_est = np.delete(fruit_est,(min1, min2), axis=0)
