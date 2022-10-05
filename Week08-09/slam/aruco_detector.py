@@ -38,11 +38,12 @@ class aruco_detector:
                 seen_ids.append(idi)
 
             # Added by Charlie:
-            sys.path.append(".")
-            import auto_fruit_search
-            a,b, aruco = auto_fruit_search.read_true_map("M4_true_map.txt")
-            coordinate = np.array([[aruco[idi-1][0]],[aruco[idi-1][1]]])
+            #sys.path.append(".")
+            #import auto_fruit_search
+            #a,b, aruco = auto_fruit_search.read_true_map("M4_true_map.txt")
+            #coordinate = np.array([[aruco[idi-1][0]],[aruco[idi-1][1]]])
             #
+
 
             lm_tvecs = tvecs[ids==idi].T
             lm_bff2d = np.block([[lm_tvecs[2,:]],[-lm_tvecs[0,:]]])

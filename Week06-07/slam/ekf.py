@@ -27,6 +27,13 @@ class EKF:
         for i in range(1, 11):
             f_ = f'./pics/8bit/lm_{i}.png'
             self.lm_pics.append(pygame.image.load(f_))
+
+        #Charlie
+        for fruit in ['apple','lemon','orange','pear','strawberry']: #0, 1, 2, 3, 4
+            f_ = f'./pics/8bit/lm_{fruit}.png'
+            self.lm_pics.append(pygame.image.load(f_))
+        #
+
         f_ = f'./pics/8bit/lm_unknown.png'
         self.lm_pics.append(pygame.image.load(f_))
         self.pibot_pic = pygame.image.load(f'./pics/8bit/pibot_top.png')
@@ -56,6 +63,15 @@ class EKF:
         if self.number_landmarks() > 0:
             utils = MappingUtils(self.markers, self.P[3:,3:], self.taglist)
             utils.save(fname)
+
+    #Charlie
+    def load_map(self, marker_list, taglist, P):
+        utils = MappingUtils(marker_list, P[3:,3:],taglist)
+        # utils.load(fname)
+        self.taglist = utils.taglist
+        self.markers = utils.markers
+        self.P = P
+    #
 
     def recover_from_pause(self, measurements):
         if not measurements:
@@ -94,18 +110,18 @@ class EKF:
         # TODO: add your codes here to compute the predicted drive
         #Robot is going in a straight line
         
-
+        Q = self.predict_covariance(raw_drive_meas)
+        self.P = F @ self.P @F.T +Q
+        """
         if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
-            Q = self.predict_covariance(raw_drive_meas)
             self.P = F @ self.P @F.T +0.5*Q
             if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
                 self.P=self.P *0.5
         #Robot is turning hence more uncertainty
         else:
-            Q = self.predict_covariance(raw_drive_meas)
             self.P = F @ self.P @F.T +0.5*Q
-            self.P = self.P*0.5
-
+            #self.P = self.P*0.5
+        """
 
     # the update step of EKF
     def update(self, measurements):
