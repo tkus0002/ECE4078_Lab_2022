@@ -112,9 +112,7 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         
         ######### Replace with your codes #########
         # TODO: compute pose of the target based on bounding box info and robot's pose
-        
-        cam_res = 640 # camera resolution in pixels
- 
+         
         x_robot = robot_pose[0][0]
         y_robot = robot_pose[1][0]
         theta_robot = robot_pose[2][0]
