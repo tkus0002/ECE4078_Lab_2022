@@ -336,8 +336,7 @@ def merge_estimations(target_pose_dict):
 
 if __name__ == "__main__":
 
-    weights_filename = 'best_sim.pt' if USING_SIM else 'best_real.pt'
-    weight_path = f'final_weights/{weights_filename}'
+    weight_path =  'network/scripts/model/best.pt'
 
     #Make sure the weight file corresponds to the test image.
 
