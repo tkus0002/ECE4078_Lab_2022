@@ -272,10 +272,6 @@ def merge_estimations(target_pose_dict):
 
 
 if __name__ == "__main__":
-
-    weights_filename = 'best_sim.pt' if USING_SIM else 'best_real.pt'
-    weight_path = f'final_weights/{weights_filename}'
-
     #Make sure the weight file corresponds to the test image.
 
     model = torch.hub.load('ultralytics/yolov5', 'custom', path=weight_path, force_reload=True)
@@ -285,14 +281,12 @@ if __name__ == "__main__":
 ####   Intrinsic for real set. Sim for simulator.
 ####
 
-    # camera_matrix = np.ones((3,3))/2
-    intrinsic_filename = 'intrinsic_sim.txt' if USING_SIM else 'intrinsic.txt'
     calibration_path = 'calibration/param/'
-    fileK = calibration_path + intrinsic_filename   
-
+    fileK = "{}intrinsic.txt".format('./calibration/param/')
     camera_matrix = np.loadtxt(fileK, delimiter=',')
     base_dir = Path('./')
     
+    weights_path =  'network/scripts/model/best.pt'
     
     # a dictionary of all the saved detector outputs
     image_poses = {}
