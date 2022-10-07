@@ -82,6 +82,16 @@ class Operate:
             self.detector = Detector(args.ckpt, use_gpu=False)
             self.network_vis = np.ones((240, 320,3))* 100
         self.bg = pygame.image.load('pics/gui_mask.jpg')
+        #Creating some variables for use
+        self.radius = 0.25
+        self.threshold = 0.1
+
+    def got_to_node(self,node):
+        """
+        Function takes a node positon and travels towards it using auto_fruit_search
+        """
+        
+
 
     # wheel control
     def control(self):       
