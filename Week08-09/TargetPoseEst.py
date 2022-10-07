@@ -1,37 +1,30 @@
-    # estimate the pose of a target object detected
-from pyexpat.errors import XML_ERROR_ABORTED
+# estimate the pose of a target object detected
 import numpy as np
 import json
 import os
 from pathlib import Path
 import ast
-# import cv2
-import math
-from machinevisiontoolbox import Image
-from network.scripts.detector import Detector
-import matplotlib.pyplot as plt
-import PIL
+from os import listdir
 
-#Defining Yolo place the model weight filepath into the weights_path variable
-weights_path =  'network/scripts/model/best.pt'
-Yolo = Detector(weights_path, use_gpu=False)
-# use the machinevision toolbox to get the bounding box of the detected target(s) in an image
-def get_bounding_box(target_number, image_path):
-    image = PIL.Image.open(image_path).resize((640,480), PIL.Image.NEAREST)
-    target = Image(image)==target_number
-    #blobs = target.blobs()
-    # plt.imshow(fruit.image)
-    # plt.annotate(str(fruit_number), np.array(blobs[0].centroid).reshape(2,))
-    # plt.show()
-    # assert len(blobs) == 1, "An image should contain only one object of each target type"
-    #Pssing the image through the network
-    _,_,yolo_results= Yolo.detect_single_image(image)
-    #Creating the box from the yellow results
-    width = abs(yolo_results[1]-yolo_results[2])
-    height = abs(yolo_results[3]-yolo_results[4])
-    center = np.array([(yolo_results[1]+yolo_results[2])/2,(yolo_results[3]+yolo_results[4])/2])
-    box = [center[0], center[1], int(width), int(height)]
-    return box
+import torch
+from sklearn.cluster import KMeans
+
+def get_bounding_box(fruit_select):
+    #Multiplying the pixel values by the appropraite scale
+    xmin = fruit_select[0] *480/416
+    ymin = fruit_select[1] *640/416
+    xmax = fruit_select[2] *480/416
+    ymax = fruit_select[3] *640/416
+    fruit = fruit_select[5]
+
+    fruit_xcent = (xmin + xmax)/2
+    fruit_ycent = (ymin + ymax)/2 
+    fruit_width = xmax - xmin
+    fruit_height = ymax - ymin
+
+    class_converter = {0:1,1:3,2:4,3:5,4:2}
+
+    return (class_converter[fruit], [fruit_xcent,fruit_ycent, fruit_width, fruit_height])
 
 # read in the list of detection results with bounding boxes and their matching robot pose info
 def get_image_info(base_dir, file_path, image_poses):
@@ -42,16 +35,24 @@ def get_image_info(base_dir, file_path, image_poses):
 
     # add the bounding box info of each target in each image
     # target labels: 1 = apple, 2 = lemon, 3 = pear, 4 = orange, 5 = strawberry, 0 = not_a_target
-    img_vals = set(Image(base_dir / file_path, grey=True).image.reshape(-1))
-    for target_num in img_vals:
-        if target_num > 0:
-            try:
-                box = get_bounding_box(target_num, base_dir/file_path) # [x,y,width,height]
-                pose = image_poses[file_path] # [x, y, theta]
-                target_lst_box[target_num-1].append(box) # bouncing box of target
-                target_lst_pose[target_num-1].append(np.array(pose).reshape(3,)) # robot pose
-            except ZeroDivisionError:
-                pass
+    img_file_path = os.path.join(base_dir, file_path)
+    model.conf = 0.2
+
+    result = model(img_file_path)
+    image_data = result.pandas().xyxy[0]
+    image_data_list = image_data.values.tolist()
+
+    yolo = []
+
+    for fruit_data in image_data_list:
+        yolo.append(get_bounding_box(fruit_data))
+
+    all_vals = yolo
+
+    for (target_num, box) in all_vals:
+        pose = image_poses[file_path] # [x, y, theta] 
+        target_lst_box[target_num-1].append(box) # bounding box of target
+        target_lst_pose[target_num-1].append(np.array(pose).reshape(3,)) # robot pose
 
     # if there are more than one objects of the same type, combine them
     for i in range(5):
@@ -69,6 +70,7 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
     # actual sizes of targets [For the simulation models]
     # You need to replace these values for the real world objects
     target_dimensions = []
+
     apple_dimensions = [0.075448, 0.074871, 0.071889]
     target_dimensions.append(apple_dimensions)
     lemon_dimensions = [0.060588, 0.059299, 0.053017]
@@ -90,58 +92,127 @@ def estimate_pose(base_dir, camera_matrix, completed_img_dict):
         true_height = target_dimensions[target_num-1][2]
         
         ######### Replace with your codes #########
-        # TODO: compute pose of the target based on bounding box info and robot's pose
-        target_pose = {'y': 0.0, 'x': 0.0}
-        
-        cam_res = 640 # camera resolution in pixels
+    
+        x_robot = robot_pose[0][0]
+        y_robot = robot_pose[1][0]
+        theta_robot = robot_pose[2][0]
 
-        A = focal_length * true_height / box[3][i] # actual depth of object
- 
-        x_robot = robot_pose[0][i]
-        y_robot = robot_pose[1][i]
-        theta_robot = robot_pose[2][i]
+        A = focal_length * true_height / box[3][0] # actual depth of object
 
-        x_camera = cam_res/2 - box[0][i]
-        theta_camera = np.arctan(x_camera/a)
-        theta_total = theta_robot + theta_camera
+        x_camera = box[0][0] / focal_length * A
+        theta_camera = np.arctan(x_camera/A)
+        dist_fruit = np.hypot(x_camera, theta_camera)
+        theta_dif = theta_robot - theta_camera
 
-        y_object = A * np.cos(theta_total)
-        x_object = A * np.cos(theta_total)
+        x_object = dist_fruit * np.cos(theta_dif)
+        y_object = dist_fruit * np.cos(theta_dif)
         
         x_object_world = x_robot + x_object
         y_object_world = y_robot + y_object
 
         target_pose = {'y':y_object_world,'x':x_object_world}
-
         target_pose_dict[target_list[target_num-1]] = target_pose
-        ###########################################
+         ###########################################
     
     return target_pose_dict
 
-# EXTRA: to changes
-def mean_fruit(fruit_est):
-    while len(fruit_est) > 2:
-        min_dist = 9999
-        #find two points close to each other
-        for i, fruit1 in enumerate(fruit_est):
-            for j, fruit2 in enumerate(fruit_est):
-                if (fruit1[0] != fruit2[0]) or (fruit1[1] != fruit2[1]): #if not same fruit
-                    distance = np.sqrt((fruit1[1]-fruit2[1])**2+(fruit1[0]-fruit2[0])**2)
-                    if distance < min_dist:
-                        min_dist = distance
-                        min1 = i
-                        min2 = j
-        #merge two points by averaging
-        x_avg = (fruit_est[min1][1] + fruit_est[min2][1])/2 #averaging x
-        y_avg = (fruit_est[min1][0] + fruit_est[min2][0])/2 #averaging y
-        fruit_est = np.delete(fruit_est,(min1, min2), axis=0)
-        fruit_est = np.vstack((fruit_est, [y_avg,x_avg]))
-    return fruit_est
+def merge_to_mean(position_est, remove_outlier = False):
 
+    # Inputs:
+    # position_est : An numpy array of coordinates {position_est[estimation #][0 = x, 1 = y]}
+    # remove_outlier : Boolean (Remove outliers using Standard Distribution z-scores)
+    # Outputs:
+    # new_mean : An numpy array of coordinates {new_mean[0 = x, 1 = y]}
+
+    # Check if the position_est has no elements
+    if len(position_est) == 0:
+        return None
+
+    # Set up working parameters
+    position_est_result = []
+    z_threshold = 3
+
+    # Compute mean and standard deviations
+    means = np.mean(position_est, axis = 0)
+    stds = np.std(position_est, axis = 0)
+    mean_x = means[0]
+    std_x = stds[0]
+    mean_y = means[1]
+    std_y = stds[1]
+    
+    # Remove outliers
+    if remove_outlier:
+        for i in range(len(position_est)):
+            coordinates = position_est[i]
+            z_score_x = (coordinates[0] - mean_x)/std_x
+            z_score_y = (coordinates[1] - mean_y)/std_y
+            if np.abs(z_score_x) > z_threshold or np.abs(z_score_y) > z_threshold:
+                position_est_result.append(coordinates)
+    else:
+        position_est_result = position_est
+
+    # Compute Mean
+    new_mean = np.mean(position_est_result, axis = 0)
+
+    return new_mean
+
+
+def sort_locations_and_merge(position_est, distance_threshold = 0.3, remove_outlier = False, use_Kmeans = False):
+
+    # Inputs:
+    # position_est : An numpy array of coordinates {position_est[estimation #][0 = x, 1 = y]}
+    # distance_threshold : the distance assumption that two fruits of the same type will be apart for
+    # remove_outlier : Boolean (Remove outliers using Standard Distribution z-scores)
+    # Outputs:
+    # new_mean : An numpy array of coordinates {new_mean[0 = x, 1 = y]}
+
+    # Initialize two sets of position estimations for each fruit of the same type
+    position_est1 = []
+    position_est2 = []
+
+    # Sort data
+    for i in range(len(position_est)):
+
+        if(use_Kmeans):
+
+            kmeans = KMeans(n_clusters = 2)
+            kmeans.fit(position_est)
+            if(kmeans.labels_[i] == 0):
+                position_est1.append(position_est[i])
+            else:
+                position_est2.append(position_est[i])
+
+        else:
+
+            if(i == 0): # Take the first position estimation as the reference for the first fruit
+                position_est1.append(position_est[i])
+                continue
+            else:
+                coordinates = position_est[i]
+                x_distance = np.abs(coordinates[0] - position_est[0][0])
+                y_distance = np.abs(coordinates[1] - position_est[0][1])
+                distance = np.sqrt(x_distance ** 2 + y_distance ** 2)
+                if(distance < distance_threshold):
+                    position_est1.append(coordinates)
+                else:
+                    position_est2.append(coordinates)
+
+    # Merge position estimations
+    position1 = merge_to_mean(position_est1, remove_outlier)
+    position2 = merge_to_mean(position_est2, remove_outlier)
+
+    # return the position estimations
+    positions = []
+    if(position1 is not None):
+        positions.append(position1)
+    if(position2 is not None):
+        positions.append(position2)
+    return positions
+        
 
 # merge the estimations of the targets so that there are at most 3 estimations of each target type
 def merge_estimations(target_pose_dict):
-    target_pose_dict = target_pose_dict
+    target_map = target_pose_dict
     apple_est, lemon_est, pear_est, orange_est, strawberry_est = [], [], [], [], []
     target_est = {}
     
@@ -161,16 +232,18 @@ def merge_estimations(target_pose_dict):
 
     ######### Replace with your codes #########
     # TODO: the operation below takes the first three estimations of each target type, replace it with a better merge solution
-    if len(apple_est) > 2:
-        apple_est = mean_fruit(apple_est)
-    if len(lemon_est) > 2:
-        lemon_est = mean_fruit(lemon_est)
-    if len(pear_est) > 2:
-        pear_est = mean_fruit(pear_est)
-    if len(orange_est) > 2:
-        orange_est = mean_fruit(orange_est)
-    if len(strawberry_est) > 2:
-        strawberry_est = mean_fruit(strawberry_est)
+    remove_outlier = False
+    use_Kmeans = False
+    if len(apple_est) > 1:
+        apple_est = sort_locations_and_merge(apple_est, distance_threshold = 0.3, remove_outlier = remove_outlier, use_Kmeans = use_Kmeans)
+    if len(lemon_est) > 1:
+        lemon_est = sort_locations_and_merge(lemon_est, distance_threshold = 0.3, remove_outlier = remove_outlier, use_Kmeans = use_Kmeans)
+    if len(pear_est) > 1:
+        pear_est = sort_locations_and_merge(pear_est, distance_threshold = 0.3, remove_outlier = remove_outlier, use_Kmeans = use_Kmeans)
+    if len(orange_est) > 1:
+        orange_est = sort_locations_and_merge(orange_est, distance_threshold = 0.3, remove_outlier = remove_outlier, use_Kmeans = use_Kmeans)
+    if len(strawberry_est) > 1:
+        strawberry_est = sort_locations_and_merge(strawberry_est, distance_threshold = 0.3, remove_outlier = remove_outlier, use_Kmeans = use_Kmeans)
 
     for i in range(2):
         try:
@@ -193,17 +266,17 @@ def merge_estimations(target_pose_dict):
             target_est['strawberry_'+str(i)] = {'y':strawberry_est[i][0], 'x':strawberry_est[i][1]}
         except:
             pass
-    ###########################################
-        
+    ########################################### 
     return target_est
 
-
 if __name__ == "__main__":
-    # camera_matrix = np.ones((3,3))/2
+    #Make sure the weight file corresponds to the test image.
+    weight_path =  'network/scripts/model/best.pt'
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path=weight_path, force_reload=True)    
+    calibration_path = 'calibration/param/'
     fileK = "{}intrinsic.txt".format('./calibration/param/')
     camera_matrix = np.loadtxt(fileK, delimiter=',')
     base_dir = Path('./')
-    
     
     # a dictionary of all the saved detector outputs
     image_poses = {}
@@ -213,6 +286,7 @@ if __name__ == "__main__":
             image_poses[pose_dict['imgfname']] = pose_dict['pose']
     
     # estimate pose of targets in each detector output
+    # {image_0:{apple:{y:YPOS,x:XPOS}}}
     target_map = {}        
     for file_path in image_poses.keys():
         completed_img_dict = get_image_info(base_dir, file_path, image_poses)
@@ -225,4 +299,4 @@ if __name__ == "__main__":
     with open(base_dir/'lab_output/targets.txt', 'w') as fo:
         json.dump(target_est, fo)
     
-    print('Estimations saved!')
+    print('Estimations saved')
