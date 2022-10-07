@@ -1,0 +1,17 @@
+# VirtualBox (username: ece4078 password: 2021Lab)
+https://github.com/tkus0002/ECE4078_Lab_2022/blob/main/Week01-02/InstallationGuide.md
+
+## Launching the simulator environment
+	source ~/catkin_ws/devel/setup.bash
+	roslaunch penguinpi_gazebo ECE4078.launch
+
+## Spawning objects
+	source ~/catkin_ws/devel/setup.bash
+	rosrun penguinpi_gazebo scene_manager.py -l map1.txt
+
+use M4_true_map_3fruits.txt for Level 2
+use M4_true_map_5fruits.txt for Level 1 and 3
+
+## Running file
+run your M4 script, auto_fruit_search.py
+take M4_true_map_3fruits.txt and search_list.txt as input files
