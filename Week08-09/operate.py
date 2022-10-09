@@ -205,6 +205,20 @@ class Operate:
         self.draw_pygame_window(canvas, detector_view, 
                                 position=(h_pad, 240+2*v_pad)
                                 )
+        #Making a window for the grid waypoints
+        waypoint_view = cv2.resize(self.network_vis,
+                                   (320, 320), cv2.INTER_NEAREST)
+        self.draw_pygame_window(canvas, waypoint_view, 
+                                position=(h_pad, 240+2*v_pad)
+                                )
+        #Drawing the current positon of the piRobot
+        '''xc = int(self.rob_cur_pos[0])
+        yc =int(self.rob_cur_pos[1])
+        x1 = xc +
+        x2 = 
+        y1 = 
+        y2 = '''
+        #Transfer the robots position into the 320 by 320 grid
 
         # canvas.blit(self.gui_mask, (0, 0))
         self.put_caption(canvas, caption='SLAM', position=(2*h_pad+320, v_pad))
