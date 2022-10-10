@@ -111,38 +111,32 @@ def drive_to_point(waypoint, robot_pose):
     # One simple strategy is to first turn on the spot facing the waypoint,
     # then drive straight to the way point
 
-    waypoint_x = waypoint[0]
-    waypoint_y = waypoint[1]
-    robot_x = robot_pose[0]
-    robot_y = robot_pose[1]
-    robot_theta = robot_pose[2]
-    waypoint_angle = np.arctan2((waypoint_y-robot_y),(waypoint_x-robot_x))
-
-    angle = waypoint_angle - robot_theta
-
     wheel_vel = 30 # tick
     
     # turn towards the waypoint
     #Calculate the angle required to turn
     dif_y = waypoint[1]-robot_pose[1]
     dif_x = waypoint[0]-robot_pose[0]
-    turn_angle = abs(np.arctan(dif_y,dif_x)-robot_pose[-1])
+    #turn_angle = abs(np.arctan(dif_y,dif_x)-robot_pose[-1])
+    turn_angle = np.arctan2(dif_y,dif_x)-robot_pose[2]
+
     turn_time = turn_angle*baseline/(wheel_vel*scale) #replace with your calculation
     #Charlie - check line above for equation
     print("Turning for {:.2f} seconds".format(turn_time))
     #Get the robots pose
     l_vl,r_vl = ppi.set_velocity([0, 1], turning_tick=wheel_vel, time=turn_time)
+
     #Creating the array for raw measurements
     raw_meas = np.array([l_vl,r_vl,turn_time])
-    robot_pose= get_robot_pose(ekf,raw_meas)
+    robot_pose = get_robot_pose(ekf,raw_meas)
+
     # after turning, drive straight to the waypoint
     dist_to_point = np.sqrt((waypoint[0]-robot_pose[0])**2+(waypoint[1]-robot_pose[1])**2)
+
     drive_time = dist_to_point/(scale*wheel_vel) # replace with your calculation
     print("Driving for {:.2f} seconds".format(drive_time))
     l_vl,r_vl=ppi.set_velocity([1, 0], tick=wheel_vel, time=drive_time)
     
-    print(f'Driving from {robot_x},{robot_y} to {waypoint_x},{waypoint_y}')
-    print(f'Turn {angle} and drive {dist_to_point}')
     ####################################################
     raw_meas = np.array([l_vl,r_vl,turn_time])
     robot_pose= get_robot_pose(ekf,raw_meas)

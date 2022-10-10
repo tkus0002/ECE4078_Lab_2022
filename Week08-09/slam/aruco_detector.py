@@ -21,7 +21,6 @@ class aruco_detector:
             img, self.aruco_dict, parameters=self.aruco_params)
         rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(
             corners, self.marker_length, self.camera_matrix, self.distortion_params)
-        # rvecs, tvecs = cv2.aruco.estimatePoseSingleMarkers(corners, self.marker_length, self.camera_matrix, self.distortion_params) # use this instead if you got a value error
 
         if ids is None:
             return [], img
@@ -36,14 +35,6 @@ class aruco_detector:
                 continue
             else:
                 seen_ids.append(idi)
-
-            # Added by Charlie:
-            #sys.path.append(".")
-            #import auto_fruit_search
-            #a,b, aruco = auto_fruit_search.read_true_map("M4_true_map.txt")
-            #coordinate = np.array([[aruco[idi-1][0]],[aruco[idi-1][1]]])
-            #
-
 
             lm_tvecs = tvecs[ids==idi].T
             lm_bff2d = np.block([[lm_tvecs[2,:]],[-lm_tvecs[0,:]]])

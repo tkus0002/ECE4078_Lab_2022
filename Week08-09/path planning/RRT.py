@@ -1,3 +1,4 @@
+# Abridged from ECE4078 Practical W3
 from path_planning.obstacle import *
 import cv2
 
@@ -53,29 +54,33 @@ class RRTC:
         self.end_node_list = [self.end]
         while len(self.start_node_list) + len(self.end_node_list) <= self.max_nodes:
 
-        #TODO: Complete the planning method ----------------------------------------------------------------
-            # 1. Sample and add a node in the start tree
+            # 1. Generate a random node
+            #  Sample and add a node in the start tree
             rnd_node = self.get_random_node()
             expansion_ind = self.get_nearest_node_index(self.start_node_list, rnd_node)
             expansion_node = self.start_node_list[expansion_ind]
-            new_node = self.steer(expansion_node, rnd_node, self.expand_dis)
-            if self.is_collision_free(new_node):
-                self.start_node_list.append(new_node)
 
+            #TODO: Complete RRT ----------------------------------------------------------------
+
+            nearby_node = self.steer(expansion_node, rnd_node, self.expand_dis)
+            if self.is_collision_free(nearby_node):
+                self.start_node_list.append(nearby_node)
+
+            #ENDTODO ----------------------------------------------------------------------------------------------
 
             # 2. Check whether trees can be connected
-            node_index = self.get_nearest_node_index(self.end_node_list, new_node)
+            node_index = self.get_nearest_node_index(self.end_node_list, nearby_node)
             node = self.end_node_list[node_index]
 
-            distance, _ = self.calc_distance_and_angle(node, new_node)
+            distance, _ = self.calc_distance_and_angle(node, nearby_node)
             if distance <= self.expand_dis:
 
 
             # 3. Add the node that connects the trees and generate the path
                 # Note: It is important that you return path found as:
                 # return self.generate_final_course(len(self.start_node_list) - 1, len(self.end_node_list) - 1)
-                if self.is_collision_free(new_node):
-                    self.end_node_list.append(new_node)
+                if self.is_collision_free(nearby_node):
+                    self.end_node_list.append(nearby_node)
                     self.start_node_list.append(node)
                     return self.generate_final_course(len(self.start_node_list) - 1, len(self.end_node_list) - 1)
             # 4. Sample and add a node in the end tree
@@ -84,14 +89,12 @@ class RRTC:
                 rnd_node = self.get_random_node()
                 expansion_ind = self.get_nearest_node_index(self.end_node_list, rnd_node)
                 expansion_node = self.end_node_list[expansion_ind]
-                new_node = self.steer(expansion_node, rnd_node, self.expand_dis)
-                if self.is_collision_free(new_node):
-                    self.end_node_list.append(new_node)
+                nearby_node = self.steer(expansion_node, rnd_node, self.expand_dis)
+                if self.is_collision_free(nearby_node):
+                    self.end_node_list.append(nearby_node)
 
             # 5. Swap start and end trees
             self.start_node_list, self.end_node_list = self.end_node_list, self.start_node_list
-
-        #ENDTODO ----------------------------------------------------------------------------------------------
 
         return None  # cannot find path
 

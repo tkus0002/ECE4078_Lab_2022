@@ -5,8 +5,6 @@ import sys
 sys.path.insert(0, "../util")
 from pibot import PenguinPi
 
-
-
 def calibrateWheelRadius():
     # Compute the robot scale parameter using a range of wheel velocities.
     # For each wheel velocity, the robot scale parameter can be computed
@@ -35,8 +33,7 @@ def calibrateWheelRadius():
             uInput = input("Did the robot travel 1m?[y/N]")
             if uInput == 'y':
                 delta_times.append(delta_time)
-                print("Recording that the robot drove 1m in {:.2f} seconds at wheel speed {}.\n".format(delta_time,
-                                                                                                        wheel_vel))
+                print("Recording that the robot drove 1m in {:.2f} seconds at wheel speed {}.\n".format(delta_time, wheel_vel))
                 break
 
     # Once finished driving, compute the scale parameter by averaging

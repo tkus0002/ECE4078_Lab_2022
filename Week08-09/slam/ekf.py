@@ -95,13 +95,15 @@ class EKF:
         #Robot is going in a straight line
         Q = self.predict_covariance(raw_drive_meas)
 
+
+        self.P = F @ self.P @ F.T + Q
         #if raw_drive_meas.left_speed==raw_drive_meas.right_speed:
         #    self.P = F @ self.P @F.T +0.5*Q
-        #    if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
-        #        self.P=self.P *0.5
+        if (np.absolute(x[0])<0.01 and np.absolute(x[1])<0.01):
+            self.P=self.P * 0.5
         #Robot is turning hence more uncertainty
         #else:
-        self.P = F @ self.P @ F.T + Q#0.5*Q
+        #0.5*Q
         #self.P = self.P*0.5
 
 
@@ -131,12 +133,11 @@ class EKF:
         #Computing the Kalman Gain
         S = H @ self.P @ H.T + R
         K = self.P @ H.T @ np.linalg.inv(S)
-        #Adjusting the correct state
+        #Adjusting the state
         y = z - z_hat
         x = x + K @ y
-        #Getting state estimate
+        #Setting state estimate and covariance
         self.set_state_vector(x)
-        #Correcting Covariance
         self.P = (np.eye(x.shape[0]) - K @ H) @ self.P
 
     def state_transition(self, raw_drive_meas):
