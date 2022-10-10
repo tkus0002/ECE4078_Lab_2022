@@ -130,32 +130,55 @@ def drive_to_point(waypoint, robot_pose):
     turn_time = turn_angle*baseline/(wheel_vel*scale) #replace with your calculation
     #Charlie - check line above for equation
     print("Turning for {:.2f} seconds".format(turn_time))
-    ppi.set_velocity([0, 1], turning_tick=wheel_vel, time=turn_time)
-    
+    #Get the robots pose
+    l_vl,r_vl = ppi.set_velocity([0, 1], turning_tick=wheel_vel, time=turn_time)
+    #Creating the array for raw measurements
+    raw_meas = np.array([l_vl,r_vl,turn_time])
+    robot_pose= get_robot_pose(ekf,raw_meas)
     # after turning, drive straight to the waypoint
     dist_to_point = np.sqrt((waypoint[0]-robot_pose[0])**2+(waypoint[1]-robot_pose[1])**2)
     drive_time = dist_to_point/(scale*wheel_vel) # replace with your calculation
     print("Driving for {:.2f} seconds".format(drive_time))
-    ppi.set_velocity([1, 0], tick=wheel_vel, time=drive_time)
+    l_vl,r_vl=ppi.set_velocity([1, 0], tick=wheel_vel, time=drive_time)
     
     print(f'Driving from {robot_x},{robot_y} to {waypoint_x},{waypoint_y}')
     print(f'Turn {angle} and drive {dist_to_point}')
     ####################################################
+    raw_meas = np.array([l_vl,r_vl,turn_time])
+    robot_pose= get_robot_pose(ekf,raw_meas)
 
     print("Arrived at [{}, {}]".format(waypoint[0], waypoint[1]))
 
 
-def get_robot_pose():
+def get_robot_pose(ekf,drive_meas):
     ####################################################
     # TODO: replace with your codes to estimate the pose of the robot
     # We STRONGLY RECOMMEND you to use your SLAM code from M2 here
 
-    # update the robot pose [x,y,theta]
-    robot_pose = [0.0,0.0,0.0] # replace with your calculation
-    robot_pose =EKF.get_state_vector()
+    #Using SLAM to get the robots position
+    ekf.predict(drive_meas)
+    lms ,_ = aruco_det.detect_marker_positions(ppi.get_image())
+    ekf.update(lms)
+    robot_pose =ekf.get_state_vector()
     ####################################################
 
     return robot_pose
+
+def init_ekf(self, datadir, ip):
+    '''Using an old function to initialise ekf'''
+    fileK = "{}intrinsic.txt".format(datadir)
+    camera_matrix = np.loadtxt(fileK, delimiter=',')
+    fileD = "{}distCoeffs.txt".format(datadir)
+    dist_coeffs = np.loadtxt(fileD, delimiter=',')
+    fileS = "{}scale.txt".format(datadir)
+    scale = np.loadtxt(fileS, delimiter=',')
+    if ip == 'localhost':
+        scale /= 2
+    fileB = "{}baseline.txt".format(datadir)  
+    baseline = np.loadtxt(fileB, delimiter=',')
+    robot = Robot(baseline, scale, camera_matrix, dist_coeffs)
+    return EKF(robot)
+
 
 # main loop
 if __name__ == "__main__":
@@ -166,7 +189,9 @@ if __name__ == "__main__":
     args, _ = parser.parse_known_args()
 
     ppi = PenguinPi(args.ip,args.port)
-
+    #Defining parameters for slam
+    ekf = init_ekf(args.calib_dir, args.ip)
+    aruco_det = aruco.aruco_detector(ekf.robot, marker_length = 0.07) # size of the ARUCO markers
     # read in the true map
     fruits_list, fruits_true_pos, aruco_true_pos = read_true_map(args.map)
     search_list = read_search_list()

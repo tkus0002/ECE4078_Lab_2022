@@ -209,7 +209,7 @@ class Operate:
         waypoint_view = cv2.resize(self.network_vis,
                                    (320, 320), cv2.INTER_NEAREST)
         self.draw_pygame_window(canvas, waypoint_view, 
-                                position=(h_pad, 240+2*v_pad)
+                                position=(h_pad+h_pad, 320+4*v_pad)
                                 )
         #Drawing the current positon of the piRobot
         '''xc = int(self.rob_cur_pos[0])
@@ -225,6 +225,8 @@ class Operate:
         self.put_caption(canvas, caption='Detector',
                          position=(h_pad, 240+2*v_pad))
         self.put_caption(canvas, caption='PiBot Cam', position=(h_pad, v_pad))
+        #Adding thew window for the GUI
+        self.put_caption(canvas, caption = "Grid",)
 
         notifiation = TEXT_FONT.render(self.notification,
                                           False, text_colour)
