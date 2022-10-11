@@ -3,14 +3,14 @@ import numpy as np
 import numpy as np
 import os
 import sys
-sys.path.insert(0, "../util")
+sys.path.insert(0, "util")
 from pibot import PenguinPi
 
 class WheelTest:
     def __init__(self, args):
-        self.fileS = "{}scale.txt".format("../calibration/param/")
+        self.fileS = "{}scale.txt".format("calibration/param/")
         self.scale = np.loadtxt(self.fileS, delimiter=',')
-        self.fileB = "{}baseline.txt".format("../calibration/param/")  
+        self.fileB = "{}baseline.txt".format("calibration/param/")  
         self.baseline = np.loadtxt(self.fileB, delimiter=',')
 
         self.drive_actual = []
@@ -38,12 +38,12 @@ class WheelTest:
         self.turn_actual.append(actual)
     
     def summary(self):
-        rmse = np.sqrt(np.mean((self.drive_actual-self.drive_target)**2))
+        rmse = np.sqrt(np.mean([(i - j) ** 2 for (i, j) in zip(self.drive_actual,self.drive_setpoint)]))
         print("Driving RMSE is ", rmse)
         print("mean = ", np.mean(self.drive_actual))
         print("variance = ", np.var(self.drive_actual, ddof=1))
 
-        turn_rmse = np.sqrt(np.mean((self.turn_actual-self.turn_target)**2))
+        turn_rmse = np.sqrt(np.mean([(i - j) ** 2 for (i, j) in zip(self.turn_actual,self.turn_setpoint)]))
         print("Turning RMSE is ", turn_rmse)
         print("turning mean = ", np.mean(self.turn_actual))
         print("turning variance = ", np.var(self.turn_actual, ddof=1))
