@@ -11,10 +11,10 @@ from sklearn.cluster import KMeans
 
 def get_bounding_box(fruit_select):
     #Multiplying the pixel values by the appropraite scale
-    xmin = fruit_select[0] *480/416
-    ymin = fruit_select[1] *640/416
-    xmax = fruit_select[2] *480/416
-    ymax = fruit_select[3] *640/416
+    xmin = fruit_select[0] *480/240
+    ymin = fruit_select[1] *640/320
+    xmax = fruit_select[2] *480/240
+    ymax = fruit_select[3] *640/240
     fruit = fruit_select[5]
 
     fruit_xcent = (xmin + xmax)/2

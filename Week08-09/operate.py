@@ -226,7 +226,7 @@ class Operate:
                          position=(h_pad, 240+2*v_pad))
         self.put_caption(canvas, caption='PiBot Cam', position=(h_pad, v_pad))
         #Adding thew window for the GUI
-        self.put_caption(canvas, caption = "Grid",)
+        self.put_caption(canvas, caption = "Grid",position=(4*h_pad, v_pad))
 
         notifiation = TEXT_FONT.render(self.notification,
                                           False, text_colour)
