@@ -29,6 +29,7 @@ Milestone 5 is the integration of all the modules you completed in the previous 
 - As usual, you are not allowed to use true poses of robot or objects retrieved from Gazebo, or teleport the robot or objects for the simulation
 - Although the final demo is likely to be the same as M5 (at least the task), minor details/rules/marking scheme are still subject to change
 - **PLEASE COMMENT YOUR CODE** this will speed up the marking process and allow us to provide better feedback if you clearly explain your workflow in your code
+- **[UPDATE]**: Three practice maps with 7 fruits in the arena, along with the corresponding search lists are provided in the [practice_maps](practice_maps) folder
 
 ---
 ## Marking schemes
