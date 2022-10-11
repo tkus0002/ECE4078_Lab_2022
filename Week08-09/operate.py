@@ -120,10 +120,10 @@ class Operate:
         self.radius = 0.25
 
         #Add known markers and fruits from map to SLAM
-        self.fruit_list, self.fruit_true_pos, self.aruco_true_pos = self.read_true_map(args.true_map)
-        self.marker_gt = np.zeros((2,len(self.aruco_true_pos) + len(self.fruit_true_pos)))
-        self.marker_gt, self.taglist, self.P = self.parse_slam_map(self.fruit_list, self.fruit_true_pos, self.aruco_true_pos)
-        self.ekf.load_map(self.marker_gt, self.taglist, self.P)
+        #self.fruit_list, self.fruit_true_pos, self.aruco_true_pos = self.read_true_map(args.true_map)
+        #self.marker_gt = np.zeros((2,len(self.aruco_true_pos) + len(self.fruit_true_pos)))
+        #self.marker_gt, self.taglist, self.P = self.parse_slam_map(self.fruit_list, self.fruit_true_pos, self.aruco_true_pos)
+        #self.ekf.load_map(self.marker_gt, self.taglist, self.P)
 
         #Generating paths from search list
         self.search_list = self.read_search_list()
