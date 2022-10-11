@@ -5,6 +5,8 @@ import numpy as np
 import cv2 
 import os, sys
 import time
+import json
+import copy
 
 # import utility functions
 sys.path.insert(0, "{}/utility".format(os.getcwd()))
@@ -24,6 +26,9 @@ import slam.aruco_detector as aruco
 sys.path.insert(0,"{}/network/".format(os.getcwd()))
 sys.path.insert(0,"{}/network/scripts".format(os.getcwd()))
 from network.scripts.detector import Detector
+
+# impoer PP
+from path_planning.RRT import *
 
 
 class Operate:
@@ -81,10 +86,51 @@ class Operate:
         else:
             self.detector = Detector(args.ckpt, use_gpu=False)
             self.network_vis = np.ones((240, 320,3))* 100
+            self.grid = cv2.imread('grid.png') #Charlie
         self.bg = pygame.image.load('pics/gui_mask.jpg')
+
+
         #Creating some variables for use
+        #self.radius = 0.25
+        #self.threshold = 0.1
+
+        #Added
+        self.pred_count = 0
+        
+        ## NEED TO CHANGE - charlie
+        self.robot_pose = [0,0,0]
+        self.forward = False
+        self.point_idx = 1
+        self.waypoints = []
+        self.wp = [0,0]
+        self.min_dist = 50
+        self.auto_path = False
+        self.taglist = []
+        self.P = np.zeros((3,3))
+        self.marker_gt = np.zeros((2,10))
+        self.init_lm_cov = 1e-6 #1e-4
+        self.paths = [[[0,0],[0.5,0.5]],[[0.5,0.5],[1,1]],[[1,1],[1,0.5]]]
+        self.path_idx = 0
+
+        #control
+        self.tick = 30
+        self.turning_tick = 5
+
+        #Path planning
         self.radius = 0.25
-        self.threshold = 0.1
+
+        #Add known markers and fruits from map to SLAM
+        self.fruit_list, self.fruit_true_pos, self.aruco_true_pos = self.read_true_map(args.true_map)
+        self.marker_gt = np.zeros((2,len(self.aruco_true_pos) + len(self.fruit_true_pos)))
+        self.marker_gt, self.taglist, self.P = self.parse_slam_map(self.fruit_list, self.fruit_true_pos, self.aruco_true_pos)
+        self.ekf.load_map(self.marker_gt, self.taglist, self.P)
+
+        #Generating paths from search list
+        self.search_list = self.read_search_list()
+        print(f'Fruit search order: {self.search_list}')
+        self.generate_paths()
+        ##
+
 
     def got_to_node(self,node):
         """
@@ -98,8 +144,7 @@ class Operate:
         if args.play_data:
             lv, rv = self.pibot.set_velocity()            
         else:
-            lv, rv = self.pibot.set_velocity(
-                self.command['motion'])
+            lv, rv = self.pibot.set_velocity(self.command['motion'])
         if not self.data is None:
             self.data.write_keyboard(lv, rv)
         dt = time.time() - self.control_clock
