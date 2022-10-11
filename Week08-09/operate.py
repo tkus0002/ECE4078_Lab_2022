@@ -32,6 +32,8 @@ from network.scripts.detector import Detector
 from path_planning.RRT import *
 import auto_fruit_search 
 
+#Import SLAM
+from slam.ekf import EKF
 
 class Operate:
     def __init__(self, args):
@@ -211,7 +213,20 @@ class Operate:
                 search_list.append(fruit.strip())
 
         return search_list
-
+    def init_ekf(self, datadir, ip):
+        '''Using an old function to initialise ekf'''
+        fileK = "{}intrinsic.txt".format(datadir)
+        camera_matrix = np.loadtxt(fileK, delimiter=',')
+        fileD = "{}distCoeffs.txt".format(datadir)
+        dist_coeffs = np.loadtxt(fileD, delimiter=',')
+        fileS = "{}scale.txt".format(datadir)
+        scale = np.loadtxt(fileS, delimiter=',')
+        if ip == 'localhost':
+            scale /= 2
+        fileB = "{}baseline.txt".format(datadir)  
+        baseline = np.loadtxt(fileB, delimiter=',')
+        robot = Robot(baseline, scale, camera_matrix, dist_coeffs)
+        return EKF(robot)
     # wheel control
     def control(self):       
         if args.play_data:
@@ -441,7 +456,20 @@ class Operate:
             pygame.quit()
             sys.exit()
  #Creating functions to drive the robot within operat.py
-    def turn_to_point(self):
+    def get_robot_pose(self,ekf,drive_meas):
+        ####################################################
+        # TODO: replace with your codes to estimate the pose of the robot
+        # We STRONGLY RECOMMEND you to use your SLAM code from M2 here
+
+        #Using SLAM to get the robots position
+        ekf.predict(drive_meas)
+        lms ,_ = aruco_det.detect_marker_positions(ppi.get_image())
+        ekf.update(lms)
+        robot_pose = ekf.get_state_vector()
+        ####################################################
+
+        return robot_pose
+    def turn_to_point(self,ekf):
         """Functions turns the robot to a specified waypoint similar to autofruit search"""
         #Calculate the angle required to turn
         dif_y = self.waypoint[1]-self.robot_pose[1]
@@ -458,7 +486,7 @@ class Operate:
         #Creating the array for raw measurements
         raw_meas = np.array([l_vl,r_vl,turn_time])
         self.robot_pose = self.get_robot_pose(ekf,raw_meas)
-    def drive_to_point(self):
+    def drive_to_point(self,ekf):
         """Function drives to a point"""
         # after turning, drive straight to the waypoint
         dist_to_point = np.sqrt((self.waypoint[0]-self.robot_pose[0])**2+(self.waypoint[1]-self.robot_pose[1])**2)
@@ -467,13 +495,13 @@ class Operate:
         print("Driving for {:.2f} seconds".format(drive_time))
         l_vl,r_vl = ppi.set_velocity([1, 0], tick=self.wheel_vel, time=drive_time)
     
-    ####################################################
-    raw_meas = np.array([l_vl,r_vl,turn_time])
-    robot_pose= get_robot_pose(ekf,raw_meas)
+        ####################################################
+        raw_meas = np.array([l_vl,r_vl,turn_time])
+        robot_pose= self.get_robot_pose(ekf,raw_meas)
 
     print("Arrived at [{}, {}]".format(waypoint[0], waypoint[1]))
 
-    def manual_driving(self):
+    def manual_driving(self,ekf):
         '''Function handles the entire driving process '''
         self.turn_to_point()
         self.drive_to_point()
@@ -522,7 +550,7 @@ if __name__ == "__main__":
             counter += 2
 
     operate = Operate(args)
-
+    ekf = operate.init_ekf(args.calib_dir, args.ip)
     while start:
         operate.update_keyboard()
         operate.take_pic()
@@ -531,7 +559,7 @@ if __name__ == "__main__":
         else:
             #Calling the user to use manual prompts
             operate.manual_node_list()
-            operate.manual_driving()
+            operate.manual_driving(ekf)
             #Prompt the user if the destination is reached
 
         drive_meas = operate.control()
