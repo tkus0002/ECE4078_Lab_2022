@@ -200,7 +200,7 @@ class Operate:
 
             return fruit_list, fruit_true_pos, aruco_true_pos
 
-    def read_search_list():
+    def read_search_list(self):
         """Read the search order of the target fruits
 
         @return: search order of the target fruits
