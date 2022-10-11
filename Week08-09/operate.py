@@ -486,6 +486,7 @@ class Operate:
         #Creating the array for raw measurements
         raw_meas = np.array([l_vl,r_vl,turn_time])
         self.robot_pose = self.get_robot_pose(ekf,raw_meas)
+
     def drive_to_point(self,ekf):
         """Function drives to a point"""
         # after turning, drive straight to the waypoint
@@ -499,7 +500,7 @@ class Operate:
         raw_meas = np.array([l_vl,r_vl,turn_time])
         robot_pose= self.get_robot_pose(ekf,raw_meas)
 
-    print("Arrived at [{}, {}]".format(waypoint[0], waypoint[1]))
+        print("Arrived at [{}, {}]".format(self.waypoint[0], self.waypoint[1]))
 
     def manual_driving(self,ekf):
         '''Function handles the entire driving process '''
