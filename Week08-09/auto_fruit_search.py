@@ -135,7 +135,7 @@ def drive_to_point(waypoint, robot_pose):
 
     drive_time = dist_to_point/(scale*wheel_vel) # replace with your calculation
     print("Driving for {:.2f} seconds".format(drive_time))
-    l_vl,r_vl=ppi.set_velocity([1, 0], tick=wheel_vel, time=drive_time)
+    l_vl,r_vl = ppi.set_velocity([1, 0], tick=wheel_vel, time=drive_time)
     
     ####################################################
     raw_meas = np.array([l_vl,r_vl,turn_time])
@@ -153,7 +153,7 @@ def get_robot_pose(ekf,drive_meas):
     ekf.predict(drive_meas)
     lms ,_ = aruco_det.detect_marker_positions(ppi.get_image())
     ekf.update(lms)
-    robot_pose =ekf.get_state_vector()
+    robot_pose = ekf.get_state_vector()
     ####################################################
 
     return robot_pose

@@ -2,6 +2,7 @@
 from path_planning.obstacle import *
 import cv2
 
+"""
 # This is an adapted version of the RRT implementation done by Atsushi Sakai (@Atsushi_twi)
 class RRTC:
     """
@@ -198,6 +199,7 @@ class RRTC:
         d = math.hypot(dx, dy)
         theta = math.atan2(dy, dx)
         return d, theta
+        """
 
 
 class RRT:
