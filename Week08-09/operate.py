@@ -1,7 +1,7 @@
 # teleoperate the robot, perform SLAM and object detection
 
 # basic python packages
-from Week08-09.auto_fruit_search import drive_to_point
+from auto_fruit_search import drive_to_point
 import numpy as np
 import cv2 
 import os, sys
