@@ -29,6 +29,7 @@ from network.scripts.detector import Detector
 
 # impoer PP
 from path_planning.RRT import *
+import auto_fruit_search 
 
 
 class Operate:
@@ -173,6 +174,20 @@ class Operate:
                         fruit_true_pos = np.append(fruit_true_pos, [[x, y]], axis=0)
 
             return fruit_list, fruit_true_pos, aruco_true_pos
+
+    def read_search_list():
+        """Read the search order of the target fruits
+
+        @return: search order of the target fruits
+        """
+        search_list = []
+        with open('search_list.txt', 'r') as fd:
+            fruits = fd.readlines()
+
+            for fruit in fruits:
+                search_list.append(fruit.strip())
+
+        return search_list
 
     # wheel control
     def control(self):       
