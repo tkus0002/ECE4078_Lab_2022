@@ -1,6 +1,7 @@
 # teleoperate the robot, perform SLAM and object detection
 
 # basic python packages
+from Week08-09.auto_fruit_search import drive_to_point
 import numpy as np
 import cv2 
 import os, sys
@@ -91,7 +92,15 @@ class Operate:
         self.bg = pygame.image.load('pics/gui_mask.jpg')
 
 
-        #Creating some variables for use
+        #Initialising constants to be used 
+        self.robot_pose = np.array([0,0,0])
+        self.waypoint = np.array((1,2))
+        self.tolerance = 0.3
+        self.drive_count = 0
+        fileS = "calibration/param/scale.txt"
+        self.scale = np.loadtxt(fileS, delimiter=',')
+        fileB = "calibration/param/baseline.txt"
+        self.baseline = np.loadtxt(fileB, delimiter=',')
         #self.radius = 0.25
         #self.threshold = 0.1
 
@@ -132,11 +141,25 @@ class Operate:
         self.generate_paths()
         ##
 
+    def auto_path(self):
+        """Function generates the path the robot follows till the end"""
 
-    def got_to_node(self,node):
+    def manual_node_list(self,node):
         """
-        Function takes a node positon and travels towards it using auto_fruit_search
+        Function prompts user for points 
         """
+        x,y = 0.0,0.0
+        x = input("X coordinate of the waypoint: ")
+        try:
+            x = float(x)
+        except ValueError:
+            print("Please enter a number.")
+        y = input("Y coordinate of the waypoint: ")
+        try:
+            y = float(y)
+        except ValueError:
+            print("Please enter a number.")
+        self.waypoint = np.array([x,y])
         
     def read_true_map(fname):
         """Read the ground truth map and output the pose of the ArUco markers and 3 types of target fruit to search
@@ -417,11 +440,47 @@ class Operate:
         if self.quit:
             pygame.quit()
             sys.exit()
+ #Creating functions to drive the robot within operat.py
+    def turn_to_point(self):
+        """Functions turns the robot to a specified waypoint similar to autofruit search"""
+        #Calculate the angle required to turn
+        dif_y = self.waypoint[1]-self.robot_pose[1]
+        dif_x = self.waypoint[0]-self.robot_pose[0]
+        #turn_angle = abs(np.arctan(dif_y,dif_x)-robot_pose[-1])
+        turn_angle = np.arctan2(dif_y,dif_x)-robot_pose[2]
 
-        
+        turn_time = turn_angle*self.baseline/(self.wheel_vel*self.scale) #replace with your calculation
+        #Charlie - check line above for equation
+        print("Turning for {:.2f} seconds".format(turn_time))
+        #Get the robots pose
+        l_vl,r_vl = ppi.set_velocity([0, 1], turning_tick=self.wheel_vel, time=turn_time)
+
+        #Creating the array for raw measurements
+        raw_meas = np.array([l_vl,r_vl,turn_time])
+        self.robot_pose = self.get_robot_pose(ekf,raw_meas)
+    def drive_to_point(self):
+        """Function drives to a point"""
+        # after turning, drive straight to the waypoint
+        dist_to_point = np.sqrt((self.waypoint[0]-self.robot_pose[0])**2+(self.waypoint[1]-self.robot_pose[1])**2)
+
+        drive_time = dist_to_point/(self.scale*self.wheel_vel) # replace with your calculation
+        print("Driving for {:.2f} seconds".format(drive_time))
+        l_vl,r_vl = ppi.set_velocity([1, 0], tick=self.wheel_vel, time=drive_time)
+    
+    ####################################################
+    raw_meas = np.array([l_vl,r_vl,turn_time])
+    robot_pose= get_robot_pose(ekf,raw_meas)
+
+    print("Arrived at [{}, {}]".format(waypoint[0], waypoint[1]))
+
+    def manual_driving(self):
+        '''Function handles the entire driving process '''
+        self.turn_to_point()
+        self.drive_to_point()
+
 if __name__ == "__main__":
     import argparse
-
+    Auto_Drive = False
     parser = argparse.ArgumentParser()
     parser.add_argument("--ip", metavar='', type=str, default='localhost')
     parser.add_argument("--port", metavar='', type=int, default=40000)
@@ -430,7 +489,7 @@ if __name__ == "__main__":
     parser.add_argument("--play_data", action='store_true')
     parser.add_argument("--ckpt", default='network/scripts/model/best.pt')
     args, _ = parser.parse_known_args()
-    
+    ppi = PenguinPi(args.ip,args.port)
     pygame.font.init() 
     TITLE_FONT = pygame.font.Font('pics/8-BitMadness.ttf', 35)
     TEXT_FONT = pygame.font.Font('pics/8-BitMadness.ttf', 40)
@@ -467,6 +526,14 @@ if __name__ == "__main__":
     while start:
         operate.update_keyboard()
         operate.take_pic()
+        if Auto_Drive:
+            print("Auto path using rrt")
+        else:
+            #Calling the user to use manual prompts
+            operate.manual_node_list()
+            operate.manual_driving()
+            #Prompt the user if the destination is reached
+
         drive_meas = operate.control()
         operate.update_slam(drive_meas)
         operate.record_data()
