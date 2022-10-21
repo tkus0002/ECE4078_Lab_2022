@@ -1,0 +1,27 @@
+# VirtualBox (username: ece4078 password: 2021Lab)
+https://github.com/tkus0002/ECE4078_Lab_2022/blob/main/Week01-02/InstallationGuide.md
+
+## Launching the simulator environment
+
+source ~/catkin_ws/devel/setup.bash
+roslaunch penguinpi_gazebo ECE4078.launch
+
+## Spawning objects
+
+source ~/catkin_ws/devel/setup.bash
+rosrun penguinpi_gazebo scene_manager.py -l FruitMap.txt
+rosrun penguinpi_gazebo scene_manager.py -l map1.txt
+
+
+## Evaluating RMSE
+
+python3 CV_eval.py TRUEMAP.txt lab_output/targets.txt
+
+## Play around with the rosrun penguinpi_gazebo scene_manager.py command using the following variations:
+Run without -l map1.txt tag to spawn objects at random locations
+Run with -d tag to remove the spawned objects
+Run with -s NAME.txt to save a new map
+
+*map only showing lemons and apples
+*slam not working
+*no position output
